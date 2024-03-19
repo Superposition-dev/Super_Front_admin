@@ -18,7 +18,7 @@ const Sidebar = () => {
     { title: '작품 관리', src: '/product', icon: <PiNotebookDuotone className="w-full h-full" /> },
     { title: '작가 관리', src: '/author', icon: <PiFolderSimpleUser className="w-full h-full" /> },
     { title: '회원 관리', src: '/user', icon: <HiOutlineUserCircle className="w-full h-full" /> },
-    { title: '로그아웃', src: '/', icon: <TbLogout className="w-full h-full" /> },
+    { title: '로그아웃', src: '/login', icon: <TbLogout className="w-full h-full" /> },
   ]
 
   useEffect(() => {
@@ -26,29 +26,31 @@ const Sidebar = () => {
   }, [location])
 
   return (
-    <div className="flex flex-col items-center gap-20 w-[300px] h-full py-3 bg-main-medium">
-      <Link to="/main" className="flex items-center justify-center w-full h-10">
-        <img className="w-[57%]" src={logo} />
-      </Link>
-      <div className="flex flex-col items-center w-full">
-        {MENU.map((item, index) => {
-          return (
-            <Link
-              key={index}
-              to={item.src}
-              className={cn(
-                'relative flex items-center justify-center gap-2 w-full h-16 text-white',
-                pathname === item.src ? 'bg-main-too-dark' : 'text-opacity-40',
-              )}
-            >
-              <div className={cn('w-6 h-6', pathname === item.src && 'text-main-bright')}>{item.icon}</div>
-              <p className="relative -top-[1px] w-1/2 text-base">{item.title}</p>
-              {pathname === item.src && <div className="absolute top-0 left-0 w-1 h-full bg-main-bright"></div>}
-            </Link>
-          )
-        })}
+    pathname !== '/login' && (
+      <div className="flex flex-col items-center gap-12 w-[300px] h-full py-4 bg-main-medium">
+        <Link to="/main" className="flex items-center justify-center w-full h-11">
+          <img className="w-[57%]" src={logo} />
+        </Link>
+        <div className="flex flex-col items-center w-full">
+          {MENU.map((item, index) => {
+            return (
+              <Link
+                key={index}
+                to={item.src}
+                className={cn(
+                  'relative flex items-center justify-center gap-2 w-full h-16 text-white',
+                  pathname === item.src ? 'bg-main-too-dark' : 'text-opacity-40',
+                )}
+              >
+                <div className={cn('w-6 h-6', pathname === item.src && 'text-main-bright')}>{item.icon}</div>
+                <p className="relative -top-[1px] w-1/2 text-base">{item.title}</p>
+                {pathname === item.src && <div className="absolute top-0 left-0 w-1 h-full bg-main-bright"></div>}
+              </Link>
+            )
+          })}
+        </div>
       </div>
-    </div>
+    )
   )
 }
 
