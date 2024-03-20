@@ -1,13 +1,17 @@
-export interface ButtonProps {
-  name: string
-  handler: () => void | undefined
+import { ButtonHTMLAttributes } from 'react'
+import cn from '../../lib/tailwindUtil'
+
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  name?: string
+  children?: React.ReactNode
+  addClass?: string
 }
 
-const Button = (props: ButtonProps) => {
-  const { name, handler } = props
+const Button = ({ name, children, addClass, ...props }: ButtonProps) => {
   return (
-    <button className="py-2 px-5 rounded-lg text-white bg-main-medium" onClick={handler}>
-      {name}
+    <button className={cn('py-2 px-5 rounded-lg text-white bg-main-medium', addClass)} {...props}>
+      {name && name}
+      {children && children}
     </button>
   )
 }

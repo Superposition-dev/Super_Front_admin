@@ -15,7 +15,7 @@ export interface SearchProps {
     setText: React.Dispatch<React.SetStateAction<string | undefined>>
     setLimit: React.Dispatch<React.SetStateAction<string | undefined>>
   }
-  handler: () => void | undefined
+  handler: () => void | void
 }
 
 const Search = (props: SearchProps) => {
@@ -81,7 +81,7 @@ const Search = (props: SearchProps) => {
           </div>
         </div>
       </div>
-      <Button name="조회" handler={handler} />
+      <Button name="조회" onClick={handler} />
     </section>
   )
 }
