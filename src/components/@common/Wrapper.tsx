@@ -12,7 +12,7 @@ const Wrapper = (props: WrapperProps) => {
   const navigate = useNavigate()
 
   return (
-    <div className="flex flex-col justify-between gap-6 w-full h-full py-4 px-6">
+    <div className="flex flex-col justify-between w-full h-screen py-4 px-6">
       <div className="flex justify-between items-center w-full h-12">
         <p className="text-[22px] font-bold">{title}</p>
         <div
@@ -25,7 +25,7 @@ const Wrapper = (props: WrapperProps) => {
           <h4 className="text-base leading-6 font-semibold text-default">aliyah521@gmail.com</h4>
         </div>
       </div>
-      <div className="w-full h-full border-t border-default border-opacity-5 pt-6">{children}</div>
+      <div className="w-full h-[94%] border-t border-default border-opacity-5 pt-6">{children}</div>
     </div>
   )
 }

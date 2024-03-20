@@ -28,7 +28,7 @@ const Search = (props: SearchProps) => {
   }, [])
 
   return (
-    <section className="flex justify-between items-center gap-3 w-full h-fit py-3 px-4 rounded-2xl bg-white shadow-light">
+    <form className="flex justify-between items-center gap-3 w-full h-fit py-3 px-4 rounded-2xl bg-white shadow-light">
       <div className="flex justify-between items-center w-[91%] h-full">
         <div className="flex justify-between items-center w-[49%] h-full">
           <p className="text-base font-semibold">등록일자</p>
@@ -82,7 +82,7 @@ const Search = (props: SearchProps) => {
         </div>
       </div>
       <Button name="조회" onClick={handler} />
-    </section>
+    </form>
   )
 }
 
