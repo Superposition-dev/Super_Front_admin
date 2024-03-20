@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import Button from './Button'
 
 export interface SearchProps {
@@ -6,19 +7,25 @@ export interface SearchProps {
     startDate: string | undefined
     endDate: string | undefined
     text: string | undefined
+    limit: string | undefined
   }
   setState: {
     setStartDate: React.Dispatch<React.SetStateAction<string | undefined>>
     setEndDate: React.Dispatch<React.SetStateAction<string | undefined>>
     setText: React.Dispatch<React.SetStateAction<string | undefined>>
+    setLimit: React.Dispatch<React.SetStateAction<string | undefined>>
   }
   handler: () => void | undefined
 }
 
 const Search = (props: SearchProps) => {
   const { filter, state, setState, handler } = props
-  const { startDate, endDate, text } = state
-  const { setStartDate, setEndDate, setText } = setState
+  const { startDate, endDate, text, limit } = state
+  const { setStartDate, setEndDate, setText, setLimit } = setState
+
+  useEffect(() => {
+    setLimit(filter[0])
+  }, [])
 
   return (
     <section className="flex justify-between items-center gap-3 w-full h-fit py-3 px-4 rounded-2xl bg-white shadow-light">
@@ -50,7 +57,10 @@ const Search = (props: SearchProps) => {
         <div className="flex justify-between items-center w-[49%] h-full py-1 px-2 rounded-md border border-gray-200">
           <select
             className="flex items-center justify-center w-[16%] h-full text-base font-semibold text-center"
-            defaultValue={filter[0]}
+            defaultValue={limit}
+            onChange={(e) => {
+              setLimit(e.target.value)
+            }}
           >
             {filter.map((item, index) => {
               return (

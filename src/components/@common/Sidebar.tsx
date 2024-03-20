@@ -18,7 +18,7 @@ const Sidebar = () => {
     { title: '작품 관리', src: '/product', icon: <PiNotebookDuotone className="w-full h-full" /> },
     { title: '작가 관리', src: '/author', icon: <PiFolderSimpleUser className="w-full h-full" /> },
     { title: '회원 관리', src: '/user', icon: <HiOutlineUserCircle className="w-full h-full" /> },
-    { title: '로그아웃', src: '/login', icon: <TbLogout className="w-full h-full" /> },
+    { title: '로그아웃', src: '/', icon: <TbLogout className="w-full h-full" /> },
   ]
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const Sidebar = () => {
   }, [location])
 
   return (
-    pathname !== '/login' && (
+    pathname !== '/' && (
       <div className="flex flex-col items-center gap-12 w-[300px] h-full py-4 bg-main-medium">
         <Link to="/main" className="flex items-center justify-center w-full h-11">
           <img className="w-[57%]" src={logo} />
