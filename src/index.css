@@ -1,10 +1,13 @@
-@import url('/src/reset.css');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+  outline: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -12,6 +15,7 @@ body {
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;
+  color: #222222;
 }
 
 @tailwind base;

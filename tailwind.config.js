@@ -12,6 +12,9 @@ export default {
         green: '#00FFCF',
         default: '#222222',
       },
+      boxShadow: {
+        light: '0 2px 4px 0px rgba(0,0,0,5%)',
+      },
     },
   },
   plugins: [],
