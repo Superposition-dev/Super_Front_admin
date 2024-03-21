@@ -3,7 +3,7 @@ import cn from '../../../lib/tailwindUtil'
 import { TBodyType, THeadType } from './Table'
 import { selectTableListAtom } from '../../../stores/atom'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 export interface TBodyProps {
   thead: Array<THeadType>
@@ -13,7 +13,6 @@ export interface TBodyProps {
 
 const TBody = ({ thead, tbody, scrollRef }: TBodyProps) => {
   const [selectedTableList, setSelectedTableList] = useRecoilState(selectTableListAtom)
-  const rowRefs = useRef<any[]>([])
   const selectRefs = useRef<any[]>([])
   const location = useLocation()
   const navigate = useNavigate()
@@ -52,7 +51,6 @@ const TBody = ({ thead, tbody, scrollRef }: TBodyProps) => {
               <tr
                 key={index}
                 className="w-full h-14 text-center border-b border-default border-opacity-5 cursor-pointer"
-                ref={(element: any) => (rowRefs.current[item.num] = element)}
                 onClick={(e) => {
                   navigated(e, item)
                 }}

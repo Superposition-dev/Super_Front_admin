@@ -63,7 +63,6 @@ const AuthorPage = () => {
             />
             <div className="flex flex-col items-center justify-between gap-2 w-full h-[83%] border-y border-default border-opacity-5">
               <Table thead={THeadData} tbody={TBodyData} addClass="h-[91%]" />
-
               <div className="flex gap-3 self-end pb-4">
                 <Button
                   name="선택 삭제"
