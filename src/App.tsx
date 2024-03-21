@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import Routers from './routes/routes'
 import Layout from './components/@common/Layout'
 import './index.css'
+import { RecoilRoot } from 'recoil'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,9 +15,11 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Layout>
-        <Routers />
-      </Layout>
+      <RecoilRoot>
+        <Layout>
+          <Routers />
+        </Layout>
+      </RecoilRoot>
     </QueryClientProvider>
   )
 }
