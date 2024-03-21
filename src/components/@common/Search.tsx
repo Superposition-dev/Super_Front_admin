@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import Button from './Button'
+import Button, { type } from './Button'
 
 export interface SearchProps {
   filter: string[]
@@ -81,7 +81,7 @@ const Search = (props: SearchProps) => {
           </div>
         </div>
       </div>
-      <Button name="조회" onClick={handler} />
+      <Button name="조회" customType={type.fill} onClick={handler} />
     </form>
   )
 }
