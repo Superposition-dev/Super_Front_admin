@@ -4,6 +4,7 @@ import Wrapper from '../components/@common/Wrapper'
 import Button, { type } from '../components/@common/Button'
 import TInteraction from '../components/@common/table/TInteraction'
 import Table from '../components/@common/table/Table'
+import Pagination from '../components/@common/Pagination'
 
 const AuthorPage = () => {
   const [startDate, setStartDate] = useState<string>()
@@ -79,7 +80,7 @@ const AuthorPage = () => {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-center h-14">12345</div>
+            <Pagination totalItems={10} page={2} />
           </section>
         </div>
       </div>
