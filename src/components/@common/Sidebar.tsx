@@ -6,28 +6,34 @@ import { PiBooks } from 'react-icons/pi'
 import { PiNotebookDuotone } from 'react-icons/pi'
 import { PiFolderSimpleUser } from 'react-icons/pi'
 import { TbLogout } from 'react-icons/tb'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import cn from '../../lib/tailwindUtil'
+import Modal from './ModalBox'
 
 const Sidebar = () => {
   const [pathname, setPathname] = useState<string>('')
+  const [isModal, setIsModal] = useState<boolean>(false)
   const location = useLocation()
+  const router = useNavigate()
   const MENU = [
     { title: '대시 보드', src: '/main', icon: <PiGraphDuotone className="w-full h-full" /> },
     { title: '전시 관리', src: '/exhibition', icon: <PiBooks className="w-full h-full" /> },
     { title: '작품 관리', src: '/product', icon: <PiNotebookDuotone className="w-full h-full" /> },
     { title: '작가 관리', src: '/author', icon: <PiFolderSimpleUser className="w-full h-full" /> },
     { title: '회원 관리', src: '/user', icon: <HiOutlineUserCircle className="w-full h-full" /> },
-    { title: '로그아웃', src: '/', icon: <TbLogout className="w-full h-full" /> },
   ]
+  
+  const handleLogout = () => {
+    alert('로그아웃 되었습니다.')
+    router('/')
+  }
 
   useEffect(() => {
     setPathname(location.pathname)
   }, [location])
-
   return (
     pathname !== '/' && (
-      <div className="flex flex-col items-center gap-12 w-[300px] h-full py-4 bg-main-medium">
+      <div className="flex flex-col items-center gap-12 w-full sm:w-[300px] h-full py-4 bg-main-medium">
         <Link to="/main" className="flex items-center justify-center w-full h-11">
           <img className="w-[57%]" src={logo} />
         </Link>
@@ -39,16 +45,28 @@ const Sidebar = () => {
                 to={item.src}
                 className={cn(
                   'relative flex items-center justify-center gap-2 w-full h-16 text-white',
-                  pathname === item.src ? 'bg-main-too-dark' : 'text-opacity-40',
+                  pathname.startsWith(item.src) ? 'bg-main-too-dark' : 'text-opacity-40',
                 )}
               >
-                <div className={cn('w-6 h-6', pathname === item.src && 'text-main-bright')}>{item.icon}</div>
+                <div className={cn('w-6 h-6', pathname.startsWith(item.src) && 'text-main-bright')}>{item.icon}</div>
                 <p className="relative -top-[1px] w-1/2 text-base">{item.title}</p>
-                {pathname === item.src && <div className="absolute top-0 left-0 w-1 h-full bg-main-bright"></div>}
+                {pathname.startsWith(item.src) && <div className="absolute top-0 left-0 w-1 h-full bg-main-bright"></div>}
               </Link>
             )
           })}
+          <div onClick={()=>setIsModal(true)} className={cn('relative flex items-center justify-center gap-2 w-full h-16 text-white text-opacity-40 cursor-pointer')}>
+            <div className={'w-6 h-6'}>
+              <TbLogout className="w-full h-full" />
+            </div>
+            <p className="relative -top-[1px] w-1/2 text-base">로그아웃</p>
+          </div>
         </div>
+        {
+          isModal &&
+          <Modal setIsModal={setIsModal} confirmText={{ okay: '로그아웃' }} confirmOkay={handleLogout}>
+            <p>로그아웃 하시겠습니까?</p>
+          </Modal>
+        }
       </div>
     )
   )
