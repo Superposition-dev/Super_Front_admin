@@ -16,7 +16,7 @@ const Wrapper = (props: WrapperProps) => {
       <div className="flex justify-between items-center w-full h-12">
         <p className="text-[22px] font-bold">{title}</p>
         <div
-          className="flex items-center justify-center gap-1.5 py-1.5 px-3.5 rounded-full border border-main-bright bg-white shadow-light cursor-pointer"
+          className="flex items-center justify-center gap-3 py-1.5 px-8 rounded-full border border-main-bright bg-white shadow-light cursor-pointer"
           onClick={() => {
             navigate('/mypage')
           }}
