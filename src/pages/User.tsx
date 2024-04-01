@@ -35,18 +35,14 @@ const UserPage = () => {
     { name: '가입일', width: 20 },
   ]
 
-  const TBodyData = [
-    { select: false, num: 1, id: 'kakao1@kakao.com', name: 'user1', isUser: true, date: '2024-01-24' },
-  ]
+  const TBodyData = [{ select: false, num: 1, id: 'kakao1@kakao.com', name: 'user1', isUser: true, date: '2024-01-24' }]
 
   return (
     <Wrapper title="회원관리">
-      <div className="w-full h-full flex flex-col gap-7">
-        <div className="flex flex-col gap-4">
-          <Search filter={filter} state={state} setState={setState} handler={() => console.log('조회 버튼 클릭')} />
-        </div>
-        <div className='w-full h-full flex flex-col gap-4'>
-          <div className="flex flex-row gap-2">
+      <div className="flex flex-col items-center justify-between gap-7 w-full h-full">
+        <Search filter={filter} state={state} setState={setState} handler={() => console.log('조회 버튼 클릭')} />
+        <div className="flex flex-col items-center justify-between gap-4 w-full h-[90%]">
+          <div className="flex flex-row self-start gap-2">
             <Button name="전체" customType={isFilter ? type.white : type.fill} onClick={() => setIsFilter(false)} />
             <Button name="작가" customType={!isFilter ? type.white : type.fill} onClick={() => setIsFilter(true)} />
           </div>
