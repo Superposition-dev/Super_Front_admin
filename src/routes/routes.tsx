@@ -1,8 +1,9 @@
 import { Routes, Route } from 'react-router-dom'
-import LoginPage from '../pages/Login/page'
+import LoginPage from '../pages/Login'
 import MainPage from '../pages/Main'
 import UserPage from '../pages/User'
 import AuthorPage from '../pages/Author'
+import UserDetail from '../pages/UserDetail'
 
 function Routers() {
   return (
@@ -10,6 +11,7 @@ function Routers() {
       <Route path="/" element={<LoginPage />} />
       <Route path="/main" element={<MainPage />} />
       <Route path="/user" element={<UserPage />} />
+      <Route path="/user/:id" element={<UserDetail />} />
       <Route path="/author" element={<AuthorPage />} />
     </Routes>
   )
