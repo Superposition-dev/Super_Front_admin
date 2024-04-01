@@ -11,6 +11,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export enum type {
   fill = 'fill',
   empty = 'empty',
+  white = 'white',
 }
 
 const Button = ({ name, children, addClass, customType, ...props }: ButtonProps) => {
@@ -22,7 +23,7 @@ const Button = ({ name, children, addClass, customType, ...props }: ButtonProps)
           ? ' text-white bg-main-medium'
           : customType === type.empty
             ? 'text-default bg-transparent border border-default border-opacity-20 '
-            : '',
+            : customType === type.white ? 'bg-white border':'',
         addClass,
       )}
       {...props}
