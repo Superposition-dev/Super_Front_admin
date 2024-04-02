@@ -1,5 +1,5 @@
 import React from 'react'
-import Sidebar from './Sidebar'
+import Sidebar from '../Sidebar'
 
 export interface LayoutProps {
   children: React.ReactNode
@@ -8,8 +8,8 @@ export interface LayoutProps {
 const Layout = (props: LayoutProps) => {
   const { children } = props
   return (
-    <div className="flex justify-center w-full h-screen max-w-[2520px]">
-      <div className="relative flex flex-col sm:flex-row  w-full h-screen">
+    <div className="flex justify-center w-full min-h-screen max-w-[2520px]">
+      <div className="relative flex flex-col sm:flex-row w-full min-h-screen">
         <Sidebar />
         <div className="w-full h-full bg-[#fafafa]">{children}</div>
       </div>

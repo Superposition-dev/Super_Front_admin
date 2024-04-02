@@ -1,7 +1,7 @@
-import Wrapper from '../components/@common/Wrapper'
+import Wrapper from '../components/@common/layout/Wrapper'
 import Modal from '../components/@common/ModalBox'
 import { useState } from 'react'
-import Button, { type } from '../components/@common/Button'
+import Button, { type } from '../components/@common/atom/Button'
 
 const MainPage = () => {
   const [isModal, setIsModal] = useState<boolean>(false)

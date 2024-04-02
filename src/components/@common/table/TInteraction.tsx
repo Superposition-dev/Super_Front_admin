@@ -1,5 +1,5 @@
 import cn from '../../../lib/tailwindUtil'
-import Label from '../Label'
+import Label from '../atom/Label'
 
 export interface TInteractionProps {
   addClass?: string

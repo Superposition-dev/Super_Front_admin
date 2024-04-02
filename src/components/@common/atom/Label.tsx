@@ -1,6 +1,6 @@
-import cn from '../../lib/tailwindUtil'
+import cn from '../../../lib/tailwindUtil'
 
-export interface LabelProps {
+export interface LabelProps extends React.InputHTMLAttributes<HTMLLabelElement> {
   name?: string
   children?: React.ReactNode
   addClass?: string
@@ -9,7 +9,8 @@ export interface LabelProps {
 const Label = ({ name, children, addClass, ...props }: LabelProps) => {
   return (
     <label className={cn('bg-gray-100 text-gray-600 px-3 py-1.5 rounded-md font-semibold', addClass)} {...props}>
-      {name}
+      {name && name}
+      {children && children}
     </label>
   )
 }

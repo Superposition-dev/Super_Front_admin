@@ -33,7 +33,7 @@ const Sidebar = () => {
   }, [location])
   return (
     pathname !== '/' && (
-      <div className="flex flex-col items-center gap-12 w-full sm:w-[360px] h-full py-4 bg-main-medium">
+      <div className="flex flex-col items-center gap-12 w-full sm:w-[360px] min-h-screen py-4 bg-main-medium">
         <Link to="/main" className="flex items-center justify-center w-full h-11">
           <img className="w-[57%]" src={logo} />
         </Link>

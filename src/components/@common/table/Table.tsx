@@ -1,8 +1,10 @@
-import { HTMLAttributes, useRef } from 'react'
+import { HTMLAttributes, useEffect, useRef } from 'react'
 import useHasScroll from '../../../hooks/useHasScroll'
 import THead from './THead'
 import TBody from './TBody'
 import cn from '../../../lib/tailwindUtil'
+import { useSetRecoilState } from 'recoil'
+import { selectTableListAtom } from '../../../stores/atom'
 
 export interface THeadType {
   name: string
@@ -11,27 +13,39 @@ export interface THeadType {
 
 export interface TBodyType {
   select?: boolean | undefined
-  num: number
+  num?: number | undefined
   name?: string | undefined
-  id?: string | undefined
-  isUser?: boolean | undefined
+  seq?: string | number | undefined
+  authorId?: string
   date?: string | undefined
+  email?: string | undefined
+  isUser?: boolean | undefined
+  isAuthor?: boolean | undefined
 }
 
 export interface TableProps extends HTMLAttributes<HTMLDivElement> {
   thead: Array<THeadType>
   tbody: Array<TBodyType>
+  index: boolean
   addClass?: string
+  children: React.ReactNode
 }
 
-const Table = ({ thead, tbody, addClass, ...props }: TableProps) => {
+const Table = ({ thead, tbody, index, children, addClass, ...props }: TableProps) => {
+  const setSelectedTableList = useSetRecoilState(selectTableListAtom)
   const scrollRef = useRef<HTMLDivElement>(null)
   const hasScroll = useHasScroll(scrollRef)
+
+  useEffect(() => {
+    setSelectedTableList([])
+  }, [])
 
   return (
     <div className={cn('flex flex-col w-full h-full', addClass)} {...props}>
       <THead thead={thead} hasScroll={hasScroll} />
-      <TBody thead={thead} tbody={tbody} scrollRef={scrollRef} />
+      <TBody thead={thead} scrollRef={scrollRef}>
+        {children}
+      </TBody>
     </div>
   )
 }
