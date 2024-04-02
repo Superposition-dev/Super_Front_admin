@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from 'react-query'
 import Routers from './routes/routes'
-import Layout from './components/@common/Layout'
+import Layout from './components/@common/layout/Layout'
 import './index.css'
 import { RecoilRoot } from 'recoil'
 

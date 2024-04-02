@@ -1,11 +1,11 @@
 import { ButtonHTMLAttributes } from 'react'
-import cn from '../../lib/tailwindUtil'
+import cn from '../../../lib/tailwindUtil'
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   name?: string
   children?: React.ReactNode
   addClass?: string
-  customType?: string
+  customType?: type
 }
 
 export enum type {
@@ -23,7 +23,9 @@ const Button = ({ name, children, addClass, customType, ...props }: ButtonProps)
           ? ' text-white bg-main-medium'
           : customType === type.empty
             ? 'text-default bg-transparent border border-default border-opacity-20 '
-            : customType === type.white ? 'bg-white border':'',
+            : customType === type.white
+              ? 'bg-white border'
+              : '',
         addClass,
       )}
       {...props}

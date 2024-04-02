@@ -29,10 +29,10 @@ const Search = (props: SearchProps) => {
 
   return (
     <form className="flex justify-between items-center gap-3 w-full h-fit py-3 px-4 rounded-2xl bg-white shadow-light">
-      <div className="flex justify-between items-center w-[91%] h-full">
+      <div className="flex justify-between items-center w-[93%] h-full">
         <div className="flex justify-between items-center w-[49%] h-full">
           <p className="text-base font-semibold">등록일자</p>
-          <div className="flex items-center justify-between w-[83%] h-full">
+          <div className="flex items-center justify-between w-[88%] h-full">
             <div className="flex items-center justify-center w-[45%] h-full py-1 px-2 rounded-md border border-gray-200">
               <input
                 type="date"
