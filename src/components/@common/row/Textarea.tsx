@@ -13,7 +13,10 @@ const Textarea = ({ title, height, ...props }: TextareaProps) => {
         {props.required && <span className="text-main-bright">*</span>}
       </h4>
       <textarea
-        className={cn('w-full h-[160px] p-3 border border-main-too-dark border-opacity-20 rounded', height)}
+        className={cn(
+          'w-full h-[160px] p-3 border border-main-too-dark border-opacity-20 rounded disabled:bg-transparent',
+          height,
+        )}
         {...props}
       />
     </div>
