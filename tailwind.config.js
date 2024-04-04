@@ -18,6 +18,7 @@ export default {
         'main-too-dark': '#4654b2',
         green: '#00FFCF',
         default: '#222222',
+        purple: '#e8d2fc',
       },
       boxShadow: {
         light: '0 2px 4px 0px rgba(0,0,0,5%)',

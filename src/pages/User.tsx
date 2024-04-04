@@ -1,7 +1,7 @@
-import Search from '../components/@common/atom/Search'
-import Wrapper from '../components/@common/layout/Wrapper'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Search from '../components/@common/atom/Search'
+import Wrapper from '../components/@common/layout/Wrapper'
 import TInteraction from '../components/@common/table/TInteraction'
 import Table, { TBodyType, THeadType } from '../components/@common/table/Table'
 import Tr from '../components/@common/table/Tr'
@@ -113,7 +113,7 @@ const UserPage = () => {
                   )
                 })}
               </Table>
-              <div className="flex gap-3 self-start pb-4">
+              <div className="flex gap-3 self-end pb-4">
                 <Button
                   name="선택 탈퇴"
                   customType={type.empty}

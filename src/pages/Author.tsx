@@ -110,7 +110,7 @@ const AuthorPage = () => {
                         onChange={() => selectedItem(item)}
                         selectRef={(element: any) => (selectRefs.current[index] = element)}
                       />
-                      <Td value={index} />
+                      <Td value={index + 1} />
                       <Td value={item.name} />
                       <Td value={item.authorId} />
                       <Td
