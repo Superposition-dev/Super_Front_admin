@@ -85,7 +85,7 @@ const AuthorPage = () => {
             name="작가 등록"
             customType={type.fill}
             addClass="self-end"
-            onClick={() => console.log('작가 등록 버튼 클릭')}
+            onClick={() => navigate('/author/post')}
           />
           <section className="flex flex-col items-center justify-between gap-3 w-full 2xl:h-[92%] h-[90%] p-5 rounded-2xl bg-white shadow-light">
             <TInteraction

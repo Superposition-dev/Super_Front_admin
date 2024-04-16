@@ -5,6 +5,7 @@ import UserPage from '../pages/User'
 import AuthorPage from '../pages/Author'
 import UserDetailPage from '../pages/UserDetail'
 import AuthorDetailPage from '../pages/AuthorDetail'
+import AuthorPostPage from '../pages/AuthorPost'
 
 function Routers() {
   return (
@@ -15,6 +16,7 @@ function Routers() {
       <Route path="/user/:id" element={<UserDetailPage />} />
       <Route path="/author" element={<AuthorPage />} />
       <Route path="/author/:id" element={<AuthorDetailPage />} />
+      <Route path="/author/post" element={<AuthorPostPage />} />
     </Routes>
   )
 }
