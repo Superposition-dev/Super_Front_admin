@@ -9,10 +9,10 @@ import Textarea from '../components/@common/row/Textarea'
 import UserType from '../components/@common/UserType'
 import Title from '../components/@common/atom/Title'
 import Label from '../components/@common/atom/Label'
+import { customDefaultImg } from '../utils/util'
 import { IoIosArrowForward } from 'react-icons/io'
 import { BiSolidMessageSquareEdit } from 'react-icons/bi'
 import cn from '../lib/tailwindUtil'
-import { customDefaultImg } from '../utils/util'
 
 export interface AuthorInfoType {
   instaId: string
@@ -21,7 +21,7 @@ export interface AuthorInfoType {
   introduction: string | null
   userAccount: string | null
   image: string | null
-  isUser: boolean | null
+  isUser: boolean
   createAt: string
   updateAt: string
 }
@@ -41,14 +41,28 @@ const data: AuthorInfoType = {
 const AuthorDetailPage = () => {
   const [authorInfo, setAuthorInfo] = useState<AuthorInfoType>(data)
   const [edit, setEdit] = useState<boolean>(false)
+  const [registed, setRegisted] = useState<boolean>()
   const navigate = useNavigate()
 
   return (
     <Wrapper title="작가 상세 정보">
       <div className="flex flex-col items-center gap-7 w-full h-full overflow-auto pr-2">
-        <UserType isAuthor={true} addClass="self-start" />
+        <UserType
+          general={!authorInfo.isUser}
+          list={['작가', '회원 + 작가']}
+          addClass={`self-start ${edit ? 'border-main-dark border-opacity-15' : ''}`}
+          onGeneral={() => {
+            edit && setAuthorInfo((prev) => ({ ...prev, isUser: false }))
+          }}
+          onNotGeneral={() => {
+            edit && setAuthorInfo((prev) => ({ ...prev, isUser: true }))
+          }}
+        />
         <div className="flex items-start justify-between gap-3 w-full h-full pb-2">
-          <Rows title="작가 정보" addClass={edit ? 'border-main-dark border-opacity-15' : ''}>
+          <Rows
+            title={edit ? '작가 정보 수정' : '작가 정보'}
+            addClass={edit ? 'border-main-dark border-opacity-15' : ''}
+          >
             <Row>
               <Input
                 required
@@ -80,12 +94,20 @@ const AuthorDetailPage = () => {
                 onChange={(e) => setAuthorInfo((prev) => ({ ...prev, userAccount: e.target.value }))}
                 button={
                   edit
-                    ? {
-                        title: '등록',
-                        onClick: () => {
-                          console.log('등록 버튼 클릭')
-                        },
-                      }
+                    ? registed
+                      ? {
+                          title: '삭제',
+                          onClick: () => {
+                            console.log('삭제 버튼 클릭')
+                          },
+                        }
+                      : {
+                          title: '등록',
+                          onClick: () => {
+                            console.log('등록 버튼 클릭')
+                            setRegisted(true)
+                          },
+                        }
                     : undefined
                 }
               />
