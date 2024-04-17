@@ -1,3 +1,4 @@
+import React from 'react'
 import cn from '../../lib/tailwindUtil'
 
 export interface UserTypeProps {
@@ -13,7 +14,7 @@ const UserType = ({ isAuthor, addClass }: UserTypeProps) => {
         addClass,
       )}
     >
-      <p className="text-xl font-semibold">회원 구분</p>
+      <p className="text-base font-semibold">회원 구분</p>
       <div className=" flex gap-4 rounded-md">
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 border border-gray-300 rounded-full flex justify-center items-center">
@@ -32,4 +33,4 @@ const UserType = ({ isAuthor, addClass }: UserTypeProps) => {
   )
 }
 
-export default UserType
+export default React.memo(UserType)
