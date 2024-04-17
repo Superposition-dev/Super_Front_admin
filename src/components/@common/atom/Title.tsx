@@ -1,3 +1,4 @@
+import React from 'react'
 import cn from '../../../lib/tailwindUtil'
 
 export interface TitleProps {
@@ -20,4 +21,4 @@ const Title = ({ addClass, value, size }: TitleProps) => {
   )
 }
 
-export default Title
+export default React.memo(Title)
