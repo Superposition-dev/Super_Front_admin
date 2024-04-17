@@ -9,6 +9,7 @@ import { TbLogout } from 'react-icons/tb'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import cn from '../../lib/tailwindUtil'
 import Modal from './ModalBox'
+import { BsTrash } from 'react-icons/bs'
 
 const Sidebar = () => {
   const [pathname, setPathname] = useState<string>('')
@@ -21,6 +22,8 @@ const Sidebar = () => {
     { title: '작품 관리', src: '/product', icon: <PiNotebookDuotone className="w-full h-full" /> },
     { title: '작가 관리', src: '/author', icon: <PiFolderSimpleUser className="w-full h-full" /> },
     { title: '회원 관리', src: '/user', icon: <HiOutlineUserCircle className="w-full h-full" /> },
+    { title: '탈퇴 관리', src: '/delete', icon: <BsTrash className="w-full h-full" /> },
+
   ]
 
   const handleLogout = () => {
