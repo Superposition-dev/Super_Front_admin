@@ -79,7 +79,13 @@ const AuthorPage = () => {
   return (
     <Wrapper title="작가관리">
       <div className="flex flex-col items-center justify-between gap-7 w-full h-full">
-        <Search filter={filter} state={state} setState={setState} handler={() => console.log('조회 버튼 클릭')} />
+        <Search
+          filter={filter}
+          date="등록일자"
+          state={state}
+          setState={setState}
+          handler={() => console.log('조회 버튼 클릭')}
+        />
         <div className="flex flex-col items-center justify-between gap-4 w-full h-[90%]">
           <Button
             name="작가 등록"

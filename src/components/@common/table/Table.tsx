@@ -15,12 +15,18 @@ export interface TBodyType {
   select?: boolean | undefined
   num?: number | undefined
   name?: string | undefined
-  seq?: string | number | undefined
+  email?: string | undefined
+  title?: string | undefined
+  subTitle?: string | undefined
   authorId?: string
   date?: string | undefined
-  email?: string | undefined
+  startDate?: string | undefined
+  endDate?: string | undefined
+  location?: string | undefined
   isUser?: boolean | undefined
   isAuthor?: boolean | undefined
+  isExhibited?: string | undefined
+  isShow?: boolean | undefined
 }
 
 export interface TableProps extends HTMLAttributes<HTMLDivElement> {

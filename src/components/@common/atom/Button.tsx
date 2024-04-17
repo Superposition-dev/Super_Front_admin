@@ -18,13 +18,13 @@ const Button = ({ name, children, addClass, customType, ...props }: ButtonProps)
   return (
     <button
       className={cn(
-        'py-2 px-5 rounded-lg',
+        'py-2 px-5 rounded-lg border',
         customType === type.fill
-          ? ' text-white bg-main-medium'
+          ? ' text-white bg-main-medium border-opacity-0'
           : customType === type.empty
-            ? 'text-default bg-transparent border border-default border-opacity-20 '
+            ? 'text-default bg-transparent border-default border-opacity-20 '
             : customType === type.white
-              ? 'bg-white border'
+              ? 'bg-white'
               : '',
         addClass,
       )}
