@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from 'react'
+import React, { ButtonHTMLAttributes } from 'react'
 import cn from '../../../lib/tailwindUtil'
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -18,9 +18,9 @@ const Button = ({ name, children, addClass, customType, ...props }: ButtonProps)
   return (
     <button
       className={cn(
-        'py-2 px-5 rounded-lg border',
+        'py-2 px-5 rounded-lg border w-fit',
         customType === type.fill
-          ? ' text-white bg-main-medium border-opacity-0'
+          ? ' text-white bg-main-medium border-main-medium'
           : customType === type.empty
             ? 'text-default bg-transparent border-default border-opacity-20 '
             : customType === type.white
@@ -36,4 +36,4 @@ const Button = ({ name, children, addClass, customType, ...props }: ButtonProps)
   )
 }
 
-export default Button
+export default React.memo(Button)
