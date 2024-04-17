@@ -164,7 +164,7 @@ const AuthorDetailPage = () => {
               />
               <Button
                 addClass="w-[100px]"
-                name={edit ? '저장' : '수정하기'}
+                name={edit ? '저장' : '수정'}
                 customType={type.fill}
                 onClick={() => {
                   edit && console.log('저장 버튼 클릭')
