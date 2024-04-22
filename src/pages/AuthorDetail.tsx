@@ -9,7 +9,7 @@ import Textarea from '../components/@common/row/Textarea'
 import UserType from '../components/@common/UserType'
 import Title from '../components/@common/atom/Title'
 import Label from '../components/@common/atom/Label'
-import { customDefaultImg } from '../utils/util'
+import { customDefaultImg, dateFormat } from '../utils/util'
 import { IoIosArrowForward } from 'react-icons/io'
 import { BiSolidMessageSquareEdit } from 'react-icons/bi'
 import cn from '../lib/tailwindUtil'
@@ -34,7 +34,7 @@ const data: AuthorInfoType = {
   userAccount: null,
   image: null,
   isUser: false,
-  createAt: '-',
+  createAt: dateFormat(new Date()),
   updateAt: '-',
 }
 
@@ -43,6 +43,8 @@ const AuthorDetailPage = () => {
   const [edit, setEdit] = useState<boolean>(false)
   const [registed, setRegisted] = useState<boolean>()
   const navigate = useNavigate()
+
+  console.log(authorInfo)
 
   return (
     <Wrapper title="작가 상세 정보">
@@ -164,7 +166,7 @@ const AuthorDetailPage = () => {
               />
               <Button
                 addClass="w-[100px]"
-                name={edit ? '저장' : '수정하기'}
+                name={edit ? '저장' : '수정'}
                 customType={type.fill}
                 onClick={() => {
                   edit && console.log('저장 버튼 클릭')

@@ -1,3 +1,4 @@
+import React from 'react'
 import cn from '../../lib/tailwindUtil'
 
 export interface UserTypeProps {
@@ -35,4 +36,4 @@ const UserType = ({ general, list, onGeneral, onNotGeneral, addClass }: UserType
   )
 }
 
-export default UserType
+export default React.memo(UserType)
