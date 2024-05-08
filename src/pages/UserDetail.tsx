@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Wrapper from '../components/@common/layout/Wrapper'
 import UserType from '../components/@common/UserType'
 import Rows from '../components/@common/row/Rows'
@@ -51,6 +51,7 @@ const UserDetailPage = () => {
   const [isModal, setIsModal] = useState<boolean>(false)
   const [imgFile, setImgFile] = useState<File | null>(null)
   const [previewImg, setPreviewImg] = useState<string | null>(null)
+  const imageRef = useRef<HTMLInputElement>(null)
 
   const navigate = useNavigate()
   const resetImage = () => {
@@ -192,6 +193,7 @@ const UserDetailPage = () => {
                   'relative flex items-center justify-center w-full h-[660px] bg-main-medium bg-opacity-20 rounded-xl overflow-hidden',
                   edit && 'cursor-pointer',
                 )}
+                onClick={() => imageRef.current?.click()}
               >
                 <img
                   className={cn(
@@ -200,7 +202,7 @@ const UserDetailPage = () => {
                   )}
                   src={previewImg ? customDefaultImg(previewImg) : customDefaultImg(userInfo.image)}
                 />
-                {edit && <ImageInput setImage={setImgFile} setPreviewImg={setPreviewImg} />}
+                {edit && <ImageInput setImage={setImgFile} setPreviewImg={setPreviewImg} imageRef={imageRef} />}
               </div>
             </div>
           </div>
