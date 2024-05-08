@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Wrapper from '../components/@common/layout/Wrapper'
 import UserType from '../components/@common/UserType'
 import Rows from '../components/@common/row/Rows'
@@ -20,7 +20,7 @@ export interface UserType {
   gender: 'M' | 'F'
   birth: string | null
   image: string | null
-  userType: string
+  isAuthor: boolean
   createAt: string
   updateAt: string
   authorInfo?: {
@@ -36,7 +36,7 @@ const data: UserType = {
   gender: 'M',
   birth: '1996-02-17',
   image: 'https://res.cloudinary.com/dv8pharbq/image/upload/v1713291153/Profile_picture_Ai_soi7sd.jpg',
-  userType: '',
+  isAuthor: false,
   createAt: '2024-02-17',
   updateAt: '',
   authorInfo: {
@@ -51,6 +51,7 @@ const UserDetailPage = () => {
   const [isModal, setIsModal] = useState<boolean>(false)
   const [imgFile, setImgFile] = useState<File | null>(null)
   const [previewImg, setPreviewImg] = useState<string | null>(null)
+  const imageRef = useRef<HTMLInputElement>(null)
 
   const navigate = useNavigate()
   const resetImage = () => {
@@ -60,7 +61,17 @@ const UserDetailPage = () => {
   return (
     <Wrapper title={'회원명'}>
       <div className="flex flex-col items-start gap-7 w-full h-full overflow-auto pr-2">
-        <UserType isAuthor={userInfo.authorInfo?true:false} />
+        <UserType
+          general={true}
+          list={['회원', '회원 + 작가']}
+          addClass={`self-start ${edit ? 'border-main-dark border-opacity-15' : ''}`}
+          onGeneral={() => {
+            edit && setUserInfo((prev) => ({ ...prev, isAuthor: false }))
+          }}
+          onNotGeneral={() => {
+            edit && setUserInfo((prev) => ({ ...prev, isAuthor: true }))
+          }}
+        />
         <div className="flex items-start justify-between w-full h-full pb-2">
           <Rows title="유저 정보" addClass={edit ? 'border-main-dark border-opacity-15' : ''}>
             <Row>
@@ -147,7 +158,7 @@ const UserDetailPage = () => {
               />
               <Button
                 addClass="w-[100px]"
-                name={edit ? '저장' : '수정하기'}
+                name={edit ? '저장' : '수정'}
                 customType={type.fill}
                 onClick={() => {
                   edit && console.log('저장 버튼 클릭')
@@ -182,12 +193,16 @@ const UserDetailPage = () => {
                   'relative flex items-center justify-center w-full h-[660px] bg-main-medium bg-opacity-20 rounded-xl overflow-hidden',
                   edit && 'cursor-pointer',
                 )}
+                onClick={() => imageRef.current?.click()}
               >
                 <img
-                  className={cn('object-cover overflow-hidden', !userInfo.image && (!previewImg&&!imgFile) && 'w-48 h-48')}
+                  className={cn(
+                    'object-cover overflow-hidden',
+                    !userInfo.image && !previewImg && !imgFile && 'w-48 h-48',
+                  )}
                   src={previewImg ? customDefaultImg(previewImg) : customDefaultImg(userInfo.image)}
                 />
-                {edit && <ImageInput setImage={setImgFile} setPreviewImg={setPreviewImg} />}
+                {edit && <ImageInput setImage={setImgFile} setPreviewImg={setPreviewImg} imageRef={imageRef} />}
               </div>
             </div>
           </div>

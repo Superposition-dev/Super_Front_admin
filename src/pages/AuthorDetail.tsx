@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button, { type } from '../components/@common/atom/Button'
 import Wrapper from '../components/@common/layout/Wrapper'
@@ -9,10 +9,10 @@ import Textarea from '../components/@common/row/Textarea'
 import UserType from '../components/@common/UserType'
 import Title from '../components/@common/atom/Title'
 import Label from '../components/@common/atom/Label'
+import { customDefaultImg, dateFormat } from '../utils/util'
 import { IoIosArrowForward } from 'react-icons/io'
-import { BiSolidMessageSquareEdit } from 'react-icons/bi'
 import cn from '../lib/tailwindUtil'
-import { customDefaultImg } from '../utils/util'
+import ImageInput from '../components/@common/row/ImageInput'
 
 export interface AuthorInfoType {
   instaId: string
@@ -21,7 +21,7 @@ export interface AuthorInfoType {
   introduction: string | null
   userAccount: string | null
   image: string | null
-  isUser: boolean | null
+  isUser: boolean
   createAt: string
   updateAt: string
 }
@@ -34,21 +34,38 @@ const data: AuthorInfoType = {
   userAccount: null,
   image: null,
   isUser: false,
-  createAt: '-',
+  createAt: dateFormat(new Date()),
   updateAt: '-',
 }
 
 const AuthorDetailPage = () => {
   const [authorInfo, setAuthorInfo] = useState<AuthorInfoType>(data)
   const [edit, setEdit] = useState<boolean>(false)
+  const [registed, setRegisted] = useState<boolean>()
+  const [image, setImage] = useState<File | null>(null)
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
   const navigate = useNavigate()
+  const imageRef = useRef<HTMLInputElement>(null)
 
   return (
     <Wrapper title="작가 상세 정보">
       <div className="flex flex-col items-center gap-7 w-full h-full overflow-auto pr-2">
-        <UserType isAuthor={true} addClass="self-start" />
-        <div className="flex items-start justify-between gap-3 w-full h-full pb-2">
-          <Rows title="작가 정보" addClass={edit ? 'border-main-dark border-opacity-15' : ''}>
+        <UserType
+          general={!authorInfo.isUser}
+          list={['작가', '회원 + 작가']}
+          addClass={`self-start ${edit ? 'border-main-dark border-opacity-15' : ''}`}
+          onGeneral={() => {
+            edit && setAuthorInfo((prev) => ({ ...prev, isUser: false }))
+          }}
+          onNotGeneral={() => {
+            edit && setAuthorInfo((prev) => ({ ...prev, isUser: true }))
+          }}
+        />
+        <div className="flex items-start justify-between gap-3 w-full 2xl:h-[800px] h-[700px]">
+          <Rows
+            title={edit ? '작가 정보 수정' : '작가 정보'}
+            addClass={cn('2xl:h-[800px] h-[700px]', edit ? 'border-main-dark border-opacity-15' : '')}
+          >
             <Row>
               <Input
                 required
@@ -80,12 +97,20 @@ const AuthorDetailPage = () => {
                 onChange={(e) => setAuthorInfo((prev) => ({ ...prev, userAccount: e.target.value }))}
                 button={
                   edit
-                    ? {
-                        title: '등록',
-                        onClick: () => {
-                          console.log('등록 버튼 클릭')
-                        },
-                      }
+                    ? registed
+                      ? {
+                          title: '삭제',
+                          onClick: () => {
+                            console.log('삭제 버튼 클릭')
+                          },
+                        }
+                      : {
+                          title: '등록',
+                          onClick: () => {
+                            console.log('등록 버튼 클릭')
+                            setRegisted(true)
+                          },
+                        }
                     : undefined
                 }
               />
@@ -142,7 +167,7 @@ const AuthorDetailPage = () => {
               />
               <Button
                 addClass="w-[100px]"
-                name={edit ? '저장' : '수정하기'}
+                name={edit ? '저장' : '수정'}
                 customType={type.fill}
                 onClick={() => {
                   edit && console.log('저장 버튼 클릭')
@@ -157,23 +182,24 @@ const AuthorDetailPage = () => {
               edit && 'border-main-dark border-opacity-15',
             )}
           >
-            <div className="flex flex-col justify-between gap-2.5 w-full h-[52%]">
+            <div className="flex flex-col justify-between gap-2.5 w-full h-[54%]">
               <Title value="작가 프로필" size="large" />
               <div
                 className={cn(
                   'relative flex items-center justify-center w-full h-[90%] bg-main-medium bg-opacity-20 rounded-xl overflow-hidden',
                   edit && 'cursor-pointer',
                 )}
+                onClick={() => imageRef.current?.click()}
               >
-                <img className="w-48 h-48" src={customDefaultImg(authorInfo.image)} />
-                {edit && <BiSolidMessageSquareEdit className="absolute top-1.5 right-1.5 w-12 h-12 text-main-medium" />}
+                <img className="w-48 h-48" src={customDefaultImg(previewImage ? previewImage : authorInfo.image)} />
+                {edit && <ImageInput setImage={setImage} setPreviewImg={setPreviewImage} imageRef={imageRef} />}
               </div>
             </div>
-            <div className="flex flex-col justify-between w-full h-[43%]">
+            <div className="flex flex-col gap-2 justify-between w-full h-[43%]">
               <div className="flex items-center justify-between">
                 <Title value="작품 정보" size="large" />
                 <Label
-                  addClass="flex items-center gap-1 py-0.5 cursor-pointer"
+                  addClass="flex items-center gap-1 py-1 cursor-pointer"
                   onClick={() => console.log('자세히 클릭')}
                 >
                   자세히
