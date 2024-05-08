@@ -5,6 +5,9 @@ import UserPage from '../pages/User'
 import AuthorPage from '../pages/Author'
 import UserDetailPage from '../pages/UserDetail'
 import AuthorDetailPage from '../pages/AuthorDetail'
+import ProductPage from '../pages/Product'
+import DeletePage from '../pages/Delete'
+import ProductDetailPage from '../pages/ProductDetail'
 import AuthorPostPage from '../pages/AuthorPost'
 import ExhibitionPage from '../pages/Exhibition'
 import ExhibitionDetailPage from '../pages/ExhibitionDetail'
@@ -18,6 +21,9 @@ function Routers() {
       <Route path="/user/:id" element={<UserDetailPage />} />
       <Route path="/author" element={<AuthorPage />} />
       <Route path="/author/:id" element={<AuthorDetailPage />} />
+      <Route path='/product' element={<ProductPage />} />
+      <Route path='/product/:id' element={<ProductDetailPage />} />
+      <Route path='/delete' element={<DeletePage />} />
       <Route path="/author/post" element={<AuthorPostPage />} />
       <Route path="/exhibition" element={<ExhibitionPage />} />
       <Route path="/exhibition/:id" element={<ExhibitionDetailPage />} />

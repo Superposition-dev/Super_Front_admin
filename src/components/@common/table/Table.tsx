@@ -29,6 +29,16 @@ export interface TBodyType {
   isShow?: boolean | undefined
 }
 
+export interface TProductBodyType {
+  select?: boolean | undefined
+  productId: number
+  title : string
+  tags?: string[]
+  author : string
+  pictureInfo?: string
+  price : string
+}
+
 export interface TableProps extends HTMLAttributes<HTMLDivElement> {
   thead: Array<THeadType>
   tbody: Array<TBodyType>
