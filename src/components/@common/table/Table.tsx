@@ -35,9 +35,10 @@ export interface TableProps extends HTMLAttributes<HTMLDivElement> {
   index: boolean
   addClass?: string
   children: React.ReactNode
+  theadClass?: string
 }
 
-const Table = ({ thead, tbody, index, children, addClass, ...props }: TableProps) => {
+const Table = ({ thead, tbody, index, children, addClass, theadClass, ...props }: TableProps) => {
   const setSelectedTableList = useSetRecoilState(selectTableListAtom)
   const scrollRef = useRef<HTMLDivElement>(null)
   const hasScroll = useHasScroll(scrollRef)
@@ -48,7 +49,7 @@ const Table = ({ thead, tbody, index, children, addClass, ...props }: TableProps
 
   return (
     <div className={cn('flex flex-col w-full h-full', addClass)} {...props}>
-      <THead thead={thead} hasScroll={hasScroll} />
+      <THead thead={thead} hasScroll={hasScroll} theadClass={theadClass} />
       <TBody thead={thead} scrollRef={scrollRef}>
         {children}
       </TBody>

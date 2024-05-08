@@ -7,6 +7,7 @@ import UserDetailPage from '../pages/UserDetail'
 import AuthorDetailPage from '../pages/AuthorDetail'
 import AuthorPostPage from '../pages/AuthorPost'
 import ExhibitionPage from '../pages/Exhibition'
+import ExhibitionDetailPage from '../pages/ExhibitionDetail'
 
 function Routers() {
   return (
@@ -19,6 +20,7 @@ function Routers() {
       <Route path="/author/:id" element={<AuthorDetailPage />} />
       <Route path="/author/post" element={<AuthorPostPage />} />
       <Route path="/exhibition" element={<ExhibitionPage />} />
+      <Route path="/exhibition/:id" element={<ExhibitionDetailPage />} />
     </Routes>
   )
 }
