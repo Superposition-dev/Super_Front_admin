@@ -5,23 +5,23 @@ import previewImage from '../../../utils/previewImage'
 type ImageInputProps = {
   setImage: React.Dispatch<React.SetStateAction<File | null>>
   setPreviewImg: React.Dispatch<React.SetStateAction<string | null>>
+  imageRef: React.RefObject<HTMLInputElement>
 }
 
-const ImageInput = ({setImage,setPreviewImg}:ImageInputProps) => {
+const ImageInput = ({ setImage, setPreviewImg, imageRef }: ImageInputProps) => {
   return (
-    <div className='absolute top-1.5 right-1.5'>
+    <div className="absolute top-1.5 right-1.5">
       <input
         type="file"
         accept="image/*"
         className="hidden"
-        id='file'
+        id="file"
+        ref={imageRef}
         onChange={(e) => {
           previewImage(e, setPreviewImg, setImage)
         }}
       />
-      <label htmlFor='file'>
-        <BiSolidMessageSquareEdit className="w-12 h-12 text-main-medium"/>
-      </label>
+      <BiSolidMessageSquareEdit className="w-12 h-12 text-main-medium" />
     </div>
   )
 }

@@ -3,6 +3,7 @@ import Button, { type } from './Button'
 
 export interface SearchProps {
   filter: string[]
+  date: string
   state: {
     startDate: string | undefined
     endDate: string | undefined
@@ -19,7 +20,7 @@ export interface SearchProps {
 }
 
 const Search = (props: SearchProps) => {
-  const { filter, state, setState, handler } = props
+  const { filter, date, state, setState, handler } = props
   const { startDate, endDate, text, limit } = state
   const { setStartDate, setEndDate, setText, setLimit } = setState
 
@@ -31,7 +32,7 @@ const Search = (props: SearchProps) => {
     <form className="flex justify-between items-center gap-3 w-full h-fit py-3 px-4 rounded-2xl bg-white shadow-light">
       <div className="flex justify-between items-center w-[93%] h-full">
         <div className="flex justify-between items-center w-[49%] h-full">
-          <p className="text-base font-semibold">등록일자</p>
+          <p className="text-base font-semibold">{date}</p>
           <div className="flex items-center justify-between w-[88%] h-full">
             <div className="flex items-center justify-center w-[45%] h-full py-1 px-2 rounded-md border border-gray-200">
               <input

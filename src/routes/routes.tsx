@@ -8,6 +8,9 @@ import AuthorDetailPage from '../pages/AuthorDetail'
 import ProductPage from '../pages/Product'
 import DeletePage from '../pages/Delete'
 import ProductDetailPage from '../pages/ProductDetail'
+import AuthorPostPage from '../pages/AuthorPost'
+import ExhibitionPage from '../pages/Exhibition'
+import ExhibitionDetailPage from '../pages/ExhibitionDetail'
 
 function Routers() {
   return (
@@ -21,6 +24,9 @@ function Routers() {
       <Route path='/product' element={<ProductPage />} />
       <Route path='/product/:id' element={<ProductDetailPage />} />
       <Route path='/delete' element={<DeletePage />} />
+      <Route path="/author/post" element={<AuthorPostPage />} />
+      <Route path="/exhibition" element={<ExhibitionPage />} />
+      <Route path="/exhibition/:id" element={<ExhibitionDetailPage />} />
     </Routes>
   )
 }

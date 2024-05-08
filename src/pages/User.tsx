@@ -73,7 +73,13 @@ const UserPage = () => {
   return (
     <Wrapper title="회원관리">
       <div className="flex flex-col items-center justify-between gap-7 w-full h-full">
-        <Search filter={filter} state={state} setState={setState} handler={() => console.log('조회 버튼 클릭')} />
+        <Search
+          filter={filter}
+          date="등록일자"
+          state={state}
+          setState={setState}
+          handler={() => console.log('조회 버튼 클릭')}
+        />
         <div className="flex flex-col items-center justify-between gap-4 w-full h-[90%]">
           <div className="flex flex-row self-start gap-2">
             <Button name="전체" customType={isFilter ? type.white : type.fill} onClick={() => setIsFilter(false)} />
@@ -100,7 +106,7 @@ const UserPage = () => {
                         defaultChecked={item.select}
                         onChange={() => selectedItem(item)}
                         selectRef={(element: any) => (selectRefs.current[index] = element)}
-                      ></Td>
+                      />
                       <Td value={item.num} />
                       <Td value={item.name} />
                       <Td value={item.email} />

@@ -4,9 +4,10 @@ import { THeadType } from './Table'
 export interface THeadProps {
   thead: Array<THeadType>
   hasScroll?: boolean
+  theadClass?: string
 }
 
-const THead = ({ thead, hasScroll }: THeadProps) => {
+const THead = ({ thead, hasScroll, theadClass }: THeadProps) => {
   return (
     <div className={cn('w-full', hasScroll ? 'pr-2' : '')}>
       <table className="w-full table-fixed break-all">
@@ -16,7 +17,7 @@ const THead = ({ thead, hasScroll }: THeadProps) => {
           })}
         </colgroup>
         <thead>
-          <tr className="h-14 text-gray-400 border-b border-default border-opacity-5 font-medium">
+          <tr className={cn('h-14 text-gray-400 border-b border-default border-opacity-5 font-medium', theadClass)}>
             {thead.map((item, index) => {
               return <th key={index}>{item.name}</th>
             })}
