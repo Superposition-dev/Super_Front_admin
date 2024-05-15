@@ -80,7 +80,7 @@ const ProductDetailPage = () => {
             </Row>
             <div className="flex flex-col gap-2.5 w-full">
               <h4 className="font-semibold">작품 태그</h4>
-              <div className='flex gap-2'>
+              <div className="flex gap-2">
                 <div className="flex gap-2">
                   <div
                     className={cn(
@@ -109,28 +109,77 @@ const ProductDetailPage = () => {
                   name={'태그 추가'}
                   customType={type.fill}
                   onClick={() => {
-                    edit && console.log('저장 버튼 클릭')
-                    setEdit(!edit)
-                    resetImage()
+                    console.log('태그 버튼 클릭')
                   }}
                 />
               </div>
             </div>
             <Row>
-                <Input
-                  type="text"
-                  title="가격"
-                  value={'100,000'}
-                  disabled
-                  constant={edit && true}
-                />
-              </Row>
+              <Input type="text" title="가격" value={'100,000'} disabled constant={edit && true} />
+            </Row>
             <div className="flex flex-col gap-6 mt-6">
               <Title value="좋아요 내역" size="large" />
+              <div className="flex flex-col w-[80%] h-[240px] border border-default border-opacity-15 rounded-xl overflow-auto">
+                <div className="flex gap-20 w-full h-12 p-3 border-b border-default border-opacity-15">
+                  <p className="w-[32%] text-center">닉네임</p>
+                  <p className="w-[32%] text-center">카카오 계정</p>
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div><div className="flex gap-20 w-full h-12 p-3">
+                  <p className="w-[32%] text-center">스프프프</p>
+                  <p className="w-[32%] text-center ellipsis">super@naver.com</p>
+                </div>
+              </div>
             </div>
             <div className="justify-self-end flex items-center justify-center gap-4 w-full mt-auto">
               <Button
-                addClass="w-[100px]"
+                addClass="w-[100px] min-w-[120px]"
                 name={edit ? '취소' : '목록'}
                 customType={type.white}
                 onClick={() => {
@@ -139,7 +188,7 @@ const ProductDetailPage = () => {
                 }}
               />
               <Button
-                addClass="w-[100px]"
+                addClass="w-[100px] min-w-[120px]"
                 name={edit ? '저장' : '수정하기'}
                 customType={type.fill}
                 onClick={() => {
@@ -152,7 +201,6 @@ const ProductDetailPage = () => {
           </Rows>
           <div
             className={cn(
-      
               'sticky top-0 flex flex-col justify-between w-[38%] h-[660px] p-4 rounded-2xl bg-white shadow-light border border-transparent',
               edit && 'border-main-dark border-opacity-15',
             )}
