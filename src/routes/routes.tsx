@@ -11,6 +11,7 @@ import ProductDetailPage from '../pages/ProductDetail'
 import AuthorPostPage from '../pages/AuthorPost'
 import ExhibitionPage from '../pages/Exhibition'
 import ExhibitionDetailPage from '../pages/ExhibitionDetail'
+import ProductEdit from '../pages/ProductEdit'
 
 function Routers() {
   return (
@@ -23,6 +24,7 @@ function Routers() {
       <Route path="/author/:id" element={<AuthorDetailPage />} />
       <Route path='/product' element={<ProductPage />} />
       <Route path='/product/:id' element={<ProductDetailPage />} />
+      <Route path='/product/edit' element={<ProductEdit />} />
       <Route path='/delete' element={<DeletePage />} />
       <Route path="/author/post" element={<AuthorPostPage />} />
       <Route path="/exhibition" element={<ExhibitionPage />} />

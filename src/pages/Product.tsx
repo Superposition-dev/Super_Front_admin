@@ -80,13 +80,13 @@ const ProductPage = () => {
   return (
     <Wrapper title="작품관리">
       <div className="flex flex-col items-center justify-between gap-7 w-full h-full">
-        <Search filter={filter} state={state} setState={setState} handler={() => console.log('조회 버튼 클릭')} />
+        <Search date={'등록일정'} filter={filter} state={state} setState={setState} handler={() => console.log('조회 버튼 클릭')} />
         <div className="flex flex-col items-center justify-between gap-4 w-full h-[90%]">
           <Button
             name="작품 등록"
             customType={type.fill}
             addClass="self-start"
-            onClick={() => console.log('작품 등록')}
+            onClick={() => navigate('/product/edit')}
           />
           <section className="flex flex-col items-center justify-between gap-3 w-full 2xl:h-[92%] h-[90%] p-5 rounded-2xl bg-white shadow-light">
             <TInteraction
