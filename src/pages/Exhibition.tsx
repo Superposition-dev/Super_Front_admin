@@ -139,7 +139,7 @@ const ExhibitionPage = () => {
               name="전시 등록"
               customType={type.fill}
               addClass="self-end"
-              onClick={() => navigate('/author/post')}
+              onClick={() => navigate('/exhibition/post')}
             />
           </div>
           <section className="flex flex-col items-center justify-between gap-3 w-full 2xl:h-[92%] h-[90%] p-5 rounded-2xl bg-white shadow-light">

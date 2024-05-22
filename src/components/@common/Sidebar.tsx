@@ -23,7 +23,6 @@ const Sidebar = () => {
     { title: '작가 관리', src: '/author', icon: <PiFolderSimpleUser className="w-full h-full" /> },
     { title: '회원 관리', src: '/user', icon: <HiOutlineUserCircle className="w-full h-full" /> },
     { title: '탈퇴 관리', src: '/delete', icon: <BsTrash className="w-full h-full" /> },
-
   ]
 
   const handleLogout = () => {
@@ -72,7 +71,7 @@ const Sidebar = () => {
           </div>
         </div>
         {isModal && (
-          <Modal setIsModal={setIsModal} confirmText={{ okay: '로그아웃' }} confirmOkay={handleLogout}>
+          <Modal setState={setIsModal} value={{ yes: '로그아웃' }} handler={handleLogout}>
             <p>로그아웃 하시겠습니까?</p>
           </Modal>
         )}

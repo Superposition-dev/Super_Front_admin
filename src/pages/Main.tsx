@@ -11,7 +11,7 @@ const MainPage = () => {
       <Button name="탈퇴" customType={type.fill} onClick={() => setIsModal(true)} />
       <div>
         {isModal && (
-          <Modal setIsModal={setIsModal} confirmText={{ okay: '탈퇴' }} confirmOkay={() => alert('탈퇴')}>
+          <Modal setState={setIsModal} value={{ yes: '탈퇴' }} handler={() => alert('탈퇴')}>
             <p>
               선택한 회원을 탈퇴처리 하시겠습니까?
               <br />
