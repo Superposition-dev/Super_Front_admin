@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button, { type } from '../components/@common/atom/Button'
 import Search from '../components/@common/atom/Search'

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Wrapper from '../components/@common/layout/Wrapper'
 import Rows from '../components/@common/row/Rows'
 import { useNavigate } from 'react-router-dom'

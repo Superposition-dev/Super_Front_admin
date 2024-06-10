@@ -1,9 +1,10 @@
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import logo from '../assets/logo.webp'
 import Input from '../components/@common/atom/Input'
-import Button, { type } from '../components/@common/atom/Button'
+import Button from '../components/@common/atom/Button'
 import { useNavigate } from 'react-router-dom'
-
+import { useMutation } from 'react-query'
+import { postLogin } from '../apis/user'
 const LoginPage = () => {
   const router = useNavigate()
   const {
@@ -17,8 +18,19 @@ const LoginPage = () => {
     },
   })
 
+  const { mutate: loginMutate } = useMutation(postLogin, {
+    onSuccess: (res) => {
+      console.log(res)
+
+      router('/main')
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
   const onSubmit: SubmitHandler<FieldValues> = async (body) => {
-    router('/main')
+    loginMutate({ id: body.email, password: body.password })
   }
 
   return (
