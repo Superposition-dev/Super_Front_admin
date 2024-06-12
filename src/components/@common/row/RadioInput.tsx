@@ -8,10 +8,7 @@ export interface ButtonType {
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   title: string
-  values: {
-    value: string
-    text: string
-  }[]
+  values: string[]
   constant?: boolean
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   disabled?: boolean
@@ -31,12 +28,12 @@ const RadioInput = ({ title, values, constant, onChange, disabled, ...props }: I
               className={cn('w-[30%]', !constant && 'disabled:bg-transparent')}
               type="radio"
               name={title}
-              value={data.value}
-              checked={props.value === data.value}
+              value={data}
+              checked={props.value === data}
               onChange={onChange}
               disabled={disabled}
             />
-            <span>{data.text}</span>
+            <span>{data}</span>
           </label>
         ))}
       </div>

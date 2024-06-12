@@ -16,6 +16,7 @@ const Sidebar = () => {
   const [isModal, setIsModal] = useState<boolean>(false)
   const location = useLocation()
   const router = useNavigate()
+
   const MENU = [
     { title: '대시 보드', src: '/main', icon: <PiGraphDuotone className="w-full h-full" /> },
     { title: '전시 관리', src: '/exhibition', icon: <PiBooks className="w-full h-full" /> },
@@ -23,7 +24,6 @@ const Sidebar = () => {
     { title: '작가 관리', src: '/author', icon: <PiFolderSimpleUser className="w-full h-full" /> },
     { title: '회원 관리', src: '/user', icon: <HiOutlineUserCircle className="w-full h-full" /> },
     { title: '탈퇴 관리', src: '/delete', icon: <BsTrash className="w-full h-full" /> },
-
   ]
 
   const handleLogout = () => {
@@ -34,6 +34,7 @@ const Sidebar = () => {
   useEffect(() => {
     setPathname(location.pathname)
   }, [location])
+
   return (
     pathname !== '/' && (
       <div className="flex flex-col items-center gap-12 w-full sm:w-[360px] min-h-screen py-4 bg-main-medium">
@@ -72,7 +73,7 @@ const Sidebar = () => {
           </div>
         </div>
         {isModal && (
-          <Modal setIsModal={setIsModal} confirmText={{ okay: '로그아웃' }} confirmOkay={handleLogout}>
+          <Modal setState={setIsModal} value={{ yes: '로그아웃' }} handler={handleLogout}>
             <p>로그아웃 하시겠습니까?</p>
           </Modal>
         )}

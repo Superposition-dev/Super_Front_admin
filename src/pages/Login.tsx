@@ -3,11 +3,11 @@ import logo from '../assets/logo.webp'
 import Input from '../components/@common/atom/Input'
 import Button from '../components/@common/atom/Button'
 import { useNavigate } from 'react-router-dom'
-import useSendLogin from '../hooks/api/useSendLogin'
+import useSendLogin from '../hooks/api/user/useSendLogin'
 
 const LoginPage = () => {
-  const navigate = useNavigate()
-  const { onSendLogin } = useSendLogin();
+  const router = useNavigate()
+  const { onSendLogin } = useSendLogin()
   const {
     register,
     handleSubmit,
@@ -22,13 +22,14 @@ const LoginPage = () => {
   const onSubmit: SubmitHandler<FieldValues> = async (body) => {
     onSendLogin(body as { id: string; password: string }, {
       onSuccess: (data) => {
-        console.log(data);
-        navigate('/product');
+        console.log(data)
+        router('/product')
       },
       onError: (error) => {
-        alert('로그인 실패');
-      }
-    });
+        console.log(error)
+        alert('로그인 실패')
+      },
+    })
   }
 
   return (
