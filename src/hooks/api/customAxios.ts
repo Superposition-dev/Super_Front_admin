@@ -14,6 +14,10 @@ const customAxios: AxiosInstance = axios.create(config)
 
 customAxios.interceptors.request.use(
   function (config) {
+    const token = sessionStorage.getItem('token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
     return Promise.resolve(config)
   },
   (error) => Promise.reject(error),

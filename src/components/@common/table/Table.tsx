@@ -32,16 +32,16 @@ export interface TBodyType {
 export interface TProductBodyType {
   select?: boolean | undefined
   productId: number
-  title : string
+  title: string
   tags?: string[]
-  author : string
+  author: string
   pictureInfo?: string
-  price : string
+  price: string
 }
 
 export interface TableProps extends HTMLAttributes<HTMLDivElement> {
   thead: Array<THeadType>
-  tbody: Array<TBodyType>
+  tbody?: Array<TBodyType>
   index: boolean
   addClass?: string
   children: React.ReactNode

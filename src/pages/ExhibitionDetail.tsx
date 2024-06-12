@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Wrapper from '../components/@common/layout/Wrapper'
 import Rows from '../components/@common/row/Rows'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Row from '../components/@common/row/Row'
 import Input from '../components/@common/row/Input'
 import Button, { type } from '../components/@common/atom/Button'
@@ -17,31 +17,27 @@ import ImageInput from '../components/@common/row/ImageInput'
 import { ProductProps, ProductType } from './ExhibitionPost'
 import { IoSearch } from 'react-icons/io5'
 import { FaCheckCircle } from 'react-icons/fa'
+import useExhibitionDetail from '../hooks/api/exhibition/useExhibitionDetail'
 
 export interface ExhibitionInfoType {
-  id: number
+  exhibitionId: number
   title: string
-  subTitle: string | null
+  subHeading: string
   startDate: string
   endDate: string
   location: string
-  isExhibited: string
-  image: string
-  createAt: string
-  updateAt: string
+  status: string
+  poster: string
+  products: ProductInfoType[]
 }
 
-const data: ExhibitionInfoType = {
-  id: 1,
-  title: '성수는 따뜻해',
-  subTitle: '냐하하~~~',
-  startDate: '2023. 09. 18',
-  endDate: '2023. 10. 01',
-  location: '성수동',
-  isExhibited: 'prev',
-  image: '',
-  createAt: '',
-  updateAt: '',
+export interface ProductInfoType {
+  basicView: number
+  likeCount: number
+  orderCount: number
+  productId: number
+  qrView: number
+  title: string
 }
 
 const productData: ProductType[] = [
@@ -75,7 +71,8 @@ const productData: ProductType[] = [
 ]
 
 const ExhibitionDetailPage = () => {
-  const [exhibitionInfo, setExhibitionInfo] = useState<ExhibitionInfoType>(data)
+  const [originInfo, setOriginInfo] = useState<ExhibitionInfoType>()
+  const [exhibitionInfo, setExhibitionInfo] = useState<ExhibitionInfoType>()
   const [productList, setProductList] = useState<ProductType[]>(productData)
   const [selectedProductList, setSelectedProductList] = useState<ProductType[]>([])
   const [edit, setEdit] = useState<boolean>(false)
@@ -83,11 +80,13 @@ const ExhibitionDetailPage = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [height, setHeight] = useState<number>()
   const navigate = useNavigate()
+  const location = useLocation()
   const today = new Date()
   const csvRef = useRef<CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }>(null)
   const imageItemRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLInputElement>(null)
   const wrapRef = useRef<HTMLInputElement>(null)
+  const path = location.pathname.split('/')[location.pathname.split('/').length - 1]
 
   const THeadData: THeadType[] = [
     { name: '작품코드', width: 18 },
@@ -98,24 +97,13 @@ const ExhibitionDetailPage = () => {
     { name: '구매신청 수', width: 13 },
   ]
 
-  const TBodyData = [
-    {
-      code: '000000',
-      title: '달콤한 머핀이 잔뜩 올라간 케이크',
-      userCount: 10,
-      qrCount: 30,
-      likeCount: 8,
-      applyCount: 2,
-    },
-  ]
-
   const header = [
-    { label: '작품 코드', key: 'code' },
+    { label: '작품 코드', key: 'productId' },
     { label: '제목', key: 'title' },
-    { label: '회원 조회수', key: 'userCount' },
-    { label: 'QR 조회수', key: 'qrCount' },
+    { label: '회원 조회수', key: 'basicView' },
+    { label: 'QR 조회수', key: 'qrView' },
     { label: '좋아요 수', key: 'likeCount' },
-    { label: '구매신청 수', key: 'applyCount' },
+    { label: '구매신청 수', key: 'orderCount' },
   ]
 
   const searchedProduct = (value: string) => {
@@ -136,6 +124,18 @@ const ExhibitionDetailPage = () => {
       setSelectedProductList(deleteSelected)
     }
   }
+
+  const { refetch: getExhibitionDetail } = useExhibitionDetail({
+    exhibitionId: Number(path),
+    enabled: false,
+    onSuccess: (data) => {
+      setOriginInfo(data)
+      setExhibitionInfo(data)
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
 
   const Product = ({ item, index }: ProductProps) => {
     const [hover, setHover] = useState<boolean>(false)
@@ -177,6 +177,10 @@ const ExhibitionDetailPage = () => {
   }
 
   useEffect(() => {
+    getExhibitionDetail()
+  }, [path])
+
+  useEffect(() => {
     setHeight(wrapRef?.current?.clientHeight)
   }, [wrapRef?.current])
 
@@ -193,19 +197,33 @@ const ExhibitionDetailPage = () => {
                 required
                 type="text"
                 title="제목"
-                value={exhibitionInfo.title}
+                value={exhibitionInfo?.title}
                 placeholder="전시 제목을 입력해 주세요."
                 disabled={edit ? false : true}
-                onChange={(e) => setExhibitionInfo((prev) => ({ ...prev, title: e.target.value }))}
+                onChange={(e) =>
+                  setExhibitionInfo((prev) => {
+                    if (!prev) {
+                      return prev
+                    }
+                    return { ...prev, title: e.target.value }
+                  })
+                }
               />
               <Input
                 required
                 type="text"
                 title="부제목"
-                value={exhibitionInfo?.createAt}
+                value={exhibitionInfo?.subHeading}
                 placeholder={edit ? '부제목을 입력해 주세요.' : '아직 등록된 부제목이 없어요.'}
                 disabled={edit ? false : true}
-                onChange={(e) => setExhibitionInfo((prev) => ({ ...prev, subTitle: e.target.value }))}
+                onChange={(e) =>
+                  setExhibitionInfo((prev) => {
+                    if (!prev) {
+                      return prev
+                    }
+                    return { ...prev, subTitle: e.target.value }
+                  })
+                }
               />
             </Row>
             <Row>
@@ -213,19 +231,33 @@ const ExhibitionDetailPage = () => {
                 required
                 type="date"
                 title="시작 일자"
-                value={exhibitionInfo.startDate}
+                value={exhibitionInfo?.startDate}
                 placeholder=""
                 disabled={edit ? false : true}
-                onChange={(e) => setExhibitionInfo((prev) => ({ ...prev, startDate: e.target.value }))}
+                onChange={(e) =>
+                  setExhibitionInfo((prev) => {
+                    if (!prev) {
+                      return prev
+                    }
+                    return { ...prev, startDate: e.target.value }
+                  })
+                }
               />
               <Input
                 required
                 type="date"
                 title="종료 일자"
-                value={exhibitionInfo.endDate}
+                value={exhibitionInfo?.endDate}
                 placeholder=""
                 disabled={edit ? false : true}
-                onChange={(e) => setExhibitionInfo((prev) => ({ ...prev, endDate: e.target.value }))}
+                onChange={(e) =>
+                  setExhibitionInfo((prev) => {
+                    if (!prev) {
+                      return prev
+                    }
+                    return { ...prev, endDate: e.target.value }
+                  })
+                }
               />
             </Row>
             <Row>
@@ -236,22 +268,30 @@ const ExhibitionDetailPage = () => {
                 value={exhibitionInfo?.location}
                 placeholder={edit ? '전시 장소를 입력해 주세요.' : '아직 등록된 전시 장소가 없어요.'}
                 disabled={edit ? false : true}
-                onChange={(e) => setExhibitionInfo((prev) => ({ ...prev, location: e.target.value }))}
+                onChange={(e) =>
+                  setExhibitionInfo((prev) => {
+                    if (!prev) {
+                      return prev
+                    }
+                    return { ...prev, location: e.target.value }
+                  })
+                }
               />
               <RadioInput
                 required
                 type="radio"
                 name="statue"
                 title="전시 상태"
-                value={exhibitionInfo.isExhibited}
-                values={[
-                  { value: 'prev', text: '전시 예정' },
-                  { value: 'current', text: '전시 중' },
-                  { value: 'done', text: '전시 완료' },
-                ]}
+                value={exhibitionInfo?.status}
+                values={['전시 예정', '전시중', '전시 종료']}
                 disabled={edit ? false : true}
                 onChange={(e) => {
-                  setExhibitionInfo((prev) => ({ ...prev, status: e.target.value as 'prev' | 'current' | 'done' }))
+                  setExhibitionInfo((prev) => {
+                    if (!prev) {
+                      return prev
+                    }
+                    return { ...prev, status: e.target.value as 'prev' | 'current' | 'done' }
+                  })
                 }}
               />
             </Row>
@@ -294,7 +334,7 @@ const ExhibitionDetailPage = () => {
               <div className="flex flex-col gap-2 w-full">
                 <div className="flex items-center gap-3 pt-4">
                   <h2 className="text-xl font-semibold">작품</h2>
-                  <span className="text-sm">전체 {TBodyData.length}건</span>
+                  <span className="text-sm">전체 {exhibitionInfo?.products.length}건</span>
                   <Button
                     addClass="h-8 py-0.5 px-2 text-sm ml-auto rounded-md"
                     name="데이터 다운로드"
@@ -306,16 +346,16 @@ const ExhibitionDetailPage = () => {
                   />
                 </div>
                 <div className="relative w-full 2xl:h-[470px] h-[410px] overflow-auto pt-0 rounded-lg bg-gray-50 border border-gray-200">
-                  <Table thead={THeadData} tbody={TBodyData} index={false} theadClass="h-11">
-                    {TBodyData.map((item, index) => {
+                  <Table thead={THeadData} index={false} theadClass="h-11">
+                    {exhibitionInfo?.products.map((item, index) => {
                       return (
                         <Tr key={index} addClass="h-10 cursor-default">
-                          <Td value={item.code} />
+                          <Td value={item.productId} />
                           <Td value={item.title} addClass="ellipsis text-center" />
-                          <Td value={item.userCount} />
-                          <Td value={item.qrCount} />
+                          <Td value={item.basicView} />
+                          <Td value={item.qrView} />
                           <Td value={item.likeCount} />
-                          <Td value={item.applyCount} />
+                          <Td value={item.orderCount} />
                         </Tr>
                       )
                     })}
@@ -355,7 +395,7 @@ const ExhibitionDetailPage = () => {
                 }}
               />
               <CSVLink
-                data={TBodyData}
+                data={exhibitionInfo ? exhibitionInfo?.products : ''}
                 headers={header}
                 filename={`${dateFormat(today)}.csv`}
                 className="hidden"
@@ -379,7 +419,13 @@ const ExhibitionDetailPage = () => {
                 )}
                 onClick={() => imageRef.current?.click()}
               >
-                <img className="w-48 h-48" src={customDefaultImg(previewImage ? previewImage : exhibitionInfo.image)} />
+                <img
+                  className={cn(
+                    'object-contain',
+                    previewImage ? 'w-full h-full' : exhibitionInfo ? 'w-full h-full' : 'w-40 h-40',
+                  )}
+                  src={customDefaultImg(previewImage ? previewImage : exhibitionInfo ? exhibitionInfo?.poster : '')}
+                />
                 {edit && <ImageInput setImage={setImage} setPreviewImg={setPreviewImage} imageRef={imageRef} />}
               </div>
             </div>

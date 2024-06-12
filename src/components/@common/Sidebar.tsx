@@ -16,6 +16,7 @@ const Sidebar = () => {
   const [isModal, setIsModal] = useState<boolean>(false)
   const location = useLocation()
   const router = useNavigate()
+
   const MENU = [
     { title: '대시 보드', src: '/main', icon: <PiGraphDuotone className="w-full h-full" /> },
     { title: '전시 관리', src: '/exhibition', icon: <PiBooks className="w-full h-full" /> },
@@ -26,13 +27,14 @@ const Sidebar = () => {
   ]
 
   const handleLogout = () => {
-    alert('로그아웃 되었습니다.')
+    sessionStorage.removeItem('token')
     router('/')
   }
 
   useEffect(() => {
     setPathname(location.pathname)
   }, [location])
+
   return (
     pathname !== '/' && (
       <div className="flex flex-col items-center gap-12 w-full sm:w-[360px] min-h-screen py-4 bg-main-medium">
