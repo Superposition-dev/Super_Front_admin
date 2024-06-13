@@ -214,7 +214,7 @@ const ExhibitionPage = () => {
           </div>
           <section className="flex flex-col items-center justify-between gap-3 w-full 2xl:h-[92%] h-[90%] p-5 rounded-2xl bg-white shadow-light">
             <TInteraction
-              search={{ name: '검색 건수', value: findCount }}
+              search={{ name: '검색 건수', value: searchedList.length }}
               total={{ name: '전체', value: totalCount }}
               date={{ name: '검색일자', value: '2023.01.01 - 2024.04.01' }}
             />
