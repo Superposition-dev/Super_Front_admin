@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Wrapper from '../components/@common/layout/Wrapper'
 import Rows from '../components/@common/row/Rows'
 import { useNavigate } from 'react-router-dom'
@@ -11,9 +11,9 @@ import { customDefaultImg } from '../utils/util'
 import RadioInput from '../components/@common/row/RadioInput'
 import ImageInput from '../components/@common/row/ImageInput'
 import { ExhibitionInfoType } from './ExhibitionDetail'
-import { FaCheckCircle } from 'react-icons/fa'
 import Modal from '../components/@common/ModalBox'
 import { IoSearch } from 'react-icons/io5'
+import ExhibitonProduct from '../components/ExhibitionProduct'
 
 export interface ProductProps {
   index: number
@@ -28,19 +28,6 @@ export interface ProductType {
   image: string
   createAt: string
   updateAt: string
-}
-
-const data: ExhibitionInfoType = {
-  id: 0,
-  title: '',
-  subTitle: '',
-  startDate: '',
-  endDate: '',
-  location: '',
-  isExhibited: '',
-  image: '',
-  createAt: '',
-  updateAt: '',
 }
 
 const productData: ProductType[] = [
@@ -74,14 +61,13 @@ const productData: ProductType[] = [
 ]
 
 const ExhibitionPostPage = () => {
-  const [exhibitionInfo, setExhibitionInfo] = useState<ExhibitionInfoType>(data)
+  const [exhibitionInfo, setExhibitionInfo] = useState<ExhibitionInfoType>()
   const [productList, setProductList] = useState<ProductType[]>(productData)
   const [selectedProductList, setSelectedProductList] = useState<ProductType[]>([])
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [image, setImage] = useState<File | null>(null)
   const [height, setHeight] = useState<number>()
   const [confirm, setConfirm] = useState<boolean>(false)
-  const imageItemRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLInputElement>(null)
   const wrapRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
@@ -110,63 +96,36 @@ const ExhibitionPostPage = () => {
     navigate('/exhibition')
   }
 
+  const memoizedProducts = useMemo(() => {
+    return productList.map((item, index) => (
+      <ExhibitonProduct
+        key={item.num}
+        item={item}
+        index={index}
+        selectedProduct={selectedProduct}
+        isSelected={selectedProductList.some((selectedItem) => selectedItem.num === item.num)}
+      />
+    ))
+  }, [productList, selectedProductList, selectedProduct])
+
   useEffect(() => {
     setHeight(wrapRef?.current?.clientHeight)
   }, [wrapRef?.current])
 
   useEffect(() => {
     setExhibitionInfo({
-      id: 1,
       title: '',
-      subTitle: '',
+      subHeading: '',
       startDate: '',
       endDate: '',
       location: '',
-      isExhibited: '',
-      image: '',
-      createAt: '',
-      updateAt: '',
+      status: '',
+      poster: '',
+      products: [],
     })
   }, [])
 
-  const Product = ({ item, index }: ProductProps) => {
-    const [hover, setHover] = useState<boolean>(false)
-    return (
-      <div
-        key={index}
-        ref={imageItemRef}
-        className={cn('relative w-full h-full cursor-pointer')}
-        onClick={() => {
-          selectedProduct(item)
-        }}
-        onMouseOver={() => setHover(true)}
-        onMouseOut={() => setHover(false)}
-      >
-        {selectedProductList.includes(item) && (
-          <>
-            <div className="absolute top-0 left-0 w-full h-full block bg-black bg-opacity-50 z-10 border-[5px] border-main-bright z-9"></div>
-            <div className="absolute right-3 top-3 w-6 h-6 rounded-full bg-white z-10" />
-            <FaCheckCircle className="absolute right-2.5 top-2.5 w-7 h-7 text-main-bright z-10" />
-          </>
-        )}
-        <img className="w-full h-full object-cover" src={item.image} />
-        {hover && (
-          <div className="absolute top-0 left-0 flex items-end w-full h-full p-1">
-            <div className="flex flex-col gap-1 w-full h-[40%] px-2 py-1 bg-black bg-opacity-75 text-white rounded-md overflow-auto">
-              <p className="flex items-center justify-between w-full">
-                <span className="w-[33%] text-sm">작품코드</span>
-                <span className="max-w-[66%] text-sm ellipsis">{item.code}</span>
-              </p>
-              <p className="flex items-start justify-between w-full">
-                <span className="w-[33%] text-sm">작품제목</span>
-                <span className="max-w-[66%] text-sm">{item.title}</span>
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-    )
-  }
+  console.log(exhibitionInfo)
 
   return (
     <Wrapper title="전시 등록">
@@ -183,15 +142,29 @@ const ExhibitionPostPage = () => {
                 title="제목"
                 value={exhibitionInfo?.title}
                 placeholder="전시 제목을 입력해 주세요."
-                onChange={(e) => setExhibitionInfo((prev) => ({ ...prev, title: e.target.value }))}
+                onChange={(e) =>
+                  setExhibitionInfo((prev) => {
+                    if (!prev) {
+                      return prev
+                    }
+                    return { ...prev, title: e.target.value }
+                  })
+                }
               />
               <Input
                 required
                 type="text"
                 title="부제목"
-                value={exhibitionInfo?.createAt}
+                value={exhibitionInfo?.subHeading}
                 placeholder="부제목을 입력해 주세요."
-                onChange={(e) => setExhibitionInfo((prev) => ({ ...prev, subTitle: e.target.value }))}
+                onChange={(e) =>
+                  setExhibitionInfo((prev) => {
+                    if (!prev) {
+                      return prev
+                    }
+                    return { ...prev, subTitle: e.target.value }
+                  })
+                }
               />
             </Row>
             <Row>
@@ -201,7 +174,14 @@ const ExhibitionPostPage = () => {
                 title="시작 일자"
                 value={exhibitionInfo?.startDate}
                 placeholder=""
-                onChange={(e) => setExhibitionInfo((prev) => ({ ...prev, startDate: e.target.value }))}
+                onChange={(e) =>
+                  setExhibitionInfo((prev) => {
+                    if (!prev) {
+                      return prev
+                    }
+                    return { ...prev, startDate: e.target.value }
+                  })
+                }
               />
               <Input
                 required
@@ -209,7 +189,14 @@ const ExhibitionPostPage = () => {
                 title="종료 일자"
                 value={exhibitionInfo?.endDate}
                 placeholder=""
-                onChange={(e) => setExhibitionInfo((prev) => ({ ...prev, endDate: e.target.value }))}
+                onChange={(e) =>
+                  setExhibitionInfo((prev) => {
+                    if (!prev) {
+                      return prev
+                    }
+                    return { ...prev, endDate: e.target.value }
+                  })
+                }
               />
             </Row>
             <Row>
@@ -219,21 +206,29 @@ const ExhibitionPostPage = () => {
                 title="전시 장소"
                 value={exhibitionInfo?.location}
                 placeholder="전시 장소를 입력해 주세요."
-                onChange={(e) => setExhibitionInfo((prev) => ({ ...prev, location: e.target.value }))}
+                onChange={(e) =>
+                  setExhibitionInfo((prev) => {
+                    if (!prev) {
+                      return prev
+                    }
+                    return { ...prev, location: e.target.value }
+                  })
+                }
               />
               <RadioInput
                 required
                 type="radio"
                 name="statue"
                 title="전시 상태"
-                value={exhibitionInfo?.isExhibited}
-                values={[
-                  { value: 'prev', text: '전시 예정' },
-                  { value: 'current', text: '전시 중' },
-                  { value: 'done', text: '전시 완료' },
-                ]}
+                value={exhibitionInfo?.status}
+                values={['전시 예정', '전시중', '전시 종료']}
                 onChange={(e) => {
-                  setExhibitionInfo((prev) => ({ ...prev, status: e.target.value as 'prev' | 'current' | 'done' }))
+                  setExhibitionInfo((prev) => {
+                    if (!prev) {
+                      return prev
+                    }
+                    return { ...prev, status: e.target.value as 'prev' | 'current' | 'done' }
+                  })
                 }}
               />
             </Row>
@@ -263,12 +258,12 @@ const ExhibitionPostPage = () => {
                   )}
                   style={{ gridTemplateRows: `repeat(${Math.ceil(productList.length / 4)}, 250px)` }}
                 >
-                  {productList?.map((item, index) => {
-                    return <Product key={index} item={item} index={index} />
-                  })}
+                  {memoizedProducts}
                 </div>
               ) : (
-                <div className="">dd</div>
+                <div className="flex items-center justify-center w-full 2xl:h-[470px] h-[410px]">
+                  등록된 작품이 없어요.
+                </div>
               )}
             </div>
             <div className="relative justify-self-end flex items-center justify-center gap-4 w-full mt-auto">
@@ -300,8 +295,11 @@ const ExhibitionPostPage = () => {
                 onClick={() => imageRef.current?.click()}
               >
                 <img
-                  className="w-48 h-48"
-                  src={customDefaultImg(previewImage !== null ? previewImage : exhibitionInfo?.image)}
+                  className={cn(
+                    'object-contain',
+                    previewImage ? 'w-full h-full' : exhibitionInfo ? 'w-full h-full' : 'w-40 h-40',
+                  )}
+                  src={customDefaultImg(previewImage ? previewImage : exhibitionInfo ? exhibitionInfo?.poster : '')}
                 />
                 <ImageInput setImage={setImage} setPreviewImg={setPreviewImage} imageRef={imageRef} />
               </div>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Wrapper from '../components/@common/layout/Wrapper'
 import Rows from '../components/@common/row/Rows'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -14,13 +14,13 @@ import Tr from '../components/@common/table/Tr'
 import Td from '../components/@common/table/Td'
 import { CSVLink } from 'react-csv'
 import ImageInput from '../components/@common/row/ImageInput'
-import { ProductProps, ProductType } from './ExhibitionPost'
+import { ProductType } from './ExhibitionPost'
 import { IoSearch } from 'react-icons/io5'
-import { FaCheckCircle } from 'react-icons/fa'
 import useExhibitionDetail from '../hooks/api/exhibition/useExhibitionDetail'
+import ExhibitonProduct from '../components/ExhibitionProduct'
 
 export interface ExhibitionInfoType {
-  exhibitionId: number
+  exhibitionId?: number
   title: string
   subHeading: string
   startDate: string
@@ -83,7 +83,6 @@ const ExhibitionDetailPage = () => {
   const location = useLocation()
   const today = new Date()
   const csvRef = useRef<CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }>(null)
-  const imageItemRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLInputElement>(null)
   const wrapRef = useRef<HTMLInputElement>(null)
   const path = location.pathname.split('/')[location.pathname.split('/').length - 1]
@@ -137,44 +136,17 @@ const ExhibitionDetailPage = () => {
     },
   })
 
-  const Product = ({ item, index }: ProductProps) => {
-    const [hover, setHover] = useState<boolean>(false)
-    return (
-      <div
-        key={index}
-        ref={imageItemRef}
-        className={cn('relative w-full h-full cursor-pointer')}
-        onClick={() => {
-          selectedProduct(item)
-        }}
-        onMouseOver={() => setHover(true)}
-        onMouseOut={() => setHover(false)}
-      >
-        {selectedProductList.includes(item) && (
-          <>
-            <div className="absolute top-0 left-0 w-full h-full block bg-black bg-opacity-50 z-10 border-[5px] border-main-bright z-9"></div>
-            <div className="absolute right-3 top-3 w-6 h-6 rounded-full bg-white z-10" />
-            <FaCheckCircle className="absolute right-2.5 top-2.5 w-7 h-7 text-main-bright z-10" />
-          </>
-        )}
-        <img className="w-full h-full object-cover" src={item.image} />
-        {hover && (
-          <div className="absolute top-0 left-0 flex items-end w-full h-full p-1">
-            <div className="flex flex-col gap-1 w-full h-[40%] px-2 py-1 bg-black bg-opacity-75 text-white rounded-md overflow-auto">
-              <p className="flex items-center justify-between w-full">
-                <span className="w-[33%] text-sm">작품코드</span>
-                <span className="max-w-[66%] text-sm ellipsis">{item.code}</span>
-              </p>
-              <p className="flex items-start justify-between w-full">
-                <span className="w-[33%] text-sm">작품제목</span>
-                <span className="max-w-[66%] text-sm">{item.title}</span>
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-    )
-  }
+  const memoizedProducts = useMemo(() => {
+    return productList.map((item, index) => (
+      <ExhibitonProduct
+        key={item.num}
+        item={item}
+        index={index}
+        selectedProduct={selectedProduct}
+        isSelected={selectedProductList.some((selectedItem) => selectedItem.num === item.num)}
+      />
+    ))
+  }, [productList, selectedProductList, selectedProduct])
 
   useEffect(() => {
     getExhibitionDetail()
@@ -322,12 +294,12 @@ const ExhibitionDetailPage = () => {
                     )}
                     style={{ gridTemplateRows: `repeat(${Math.ceil(productList.length / 4)}, 250px)` }}
                   >
-                    {productList?.map((item, index) => {
-                      return <Product key={index} item={item} index={index} />
-                    })}
+                    {memoizedProducts}
                   </div>
                 ) : (
-                  <div className="">dd</div>
+                  <div className="flex items-center justify-center w-full 2xl:h-[470px] h-[410px]">
+                    등록된 작품이 없어요.
+                  </div>
                 )}
               </div>
             ) : (

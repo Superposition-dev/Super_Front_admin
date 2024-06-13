@@ -13,6 +13,7 @@ import ExhibitionPage from '../pages/Exhibition'
 import ExhibitionDetailPage from '../pages/ExhibitionDetail'
 import ProductEdit from '../pages/ProductEdit'
 import ProtectedRoute from './ProtectedRoute' // import ProtectedRoute
+import ExhibitionPostPage from '../pages/ExhibitionPost'
 
 function Routers() {
   return (
@@ -111,6 +112,14 @@ function Routers() {
         element={
           <ProtectedRoute>
             <ExhibitionDetailPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/exhibition/post"
+        element={
+          <ProtectedRoute>
+            <ExhibitionPostPage />
           </ProtectedRoute>
         }
       />
