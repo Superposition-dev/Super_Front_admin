@@ -1,12 +1,13 @@
 import { memo, useState, useRef } from 'react'
 import { FaCheckCircle } from 'react-icons/fa'
 import cn from '../lib/tailwindUtil'
-import { ProductType } from '../pages/ExhibitionPost'
+import { customDefaultImg } from '../utils/util'
+import { ProductInfoType } from '../pages/ExhibitionDetail'
 
 interface ExhibitionProductProps {
-  item: ProductType
+  item: ProductInfoType
   index: number
-  selectedProduct: (item: ProductType) => void
+  selectedProduct: (item: ProductInfoType) => void
   isSelected: boolean
 }
 
@@ -32,13 +33,13 @@ const ExhibitonProduct = memo(({ item, index, selectedProduct, isSelected }: Exh
           <FaCheckCircle className="absolute right-2.5 top-2.5 w-7 h-7 text-main-bright z-10" />
         </>
       )}
-      <img className="w-full h-full object-cover" src={item.image} />
+      <img className="w-full h-full object-cover" src={customDefaultImg(item.picture)} />
       {hover && (
         <div className="absolute top-0 left-0 flex items-end w-full h-full p-1">
-          <div className="flex flex-col gap-1 w-full h-[40%] px-2 py-1 bg-black bg-opacity-75 text-white rounded-md overflow-auto">
+          <div className="flex flex-col gap-1 w-full h-fit px-2.5 py-2 bg-black bg-opacity-75 text-white rounded-md overflow-auto">
             <p className="flex items-center justify-between w-full">
-              <span className="w-[33%] text-sm">작품코드</span>
-              <span className="max-w-[66%] text-sm ellipsis">{item.code}</span>
+              <span className="w-[33%] text-sm">작품번호</span>
+              <span className="max-w-[66%] text-sm ellipsis">{item.productId}</span>
             </p>
             <p className="flex items-start justify-between w-full">
               <span className="w-[33%] text-sm">작품제목</span>

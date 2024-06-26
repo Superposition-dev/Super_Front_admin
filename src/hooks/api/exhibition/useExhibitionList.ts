@@ -6,6 +6,7 @@ interface useExhibitionListParams extends UseQueryOptions<any, any> {
   endDate?: string
   text?: string
   limit?: string
+  page?: number
   onSuccess?: (data: any) => void
   onError?: (error: any) => void
   enabled?: boolean
@@ -19,6 +20,7 @@ const useExhibitionList = ({
   endDate,
   text,
   limit,
+  page,
   onSuccess,
   onError,
   enabled,
@@ -27,13 +29,14 @@ const useExhibitionList = ({
   refetchOnMount,
 }: useExhibitionListParams) => {
   return useQuery(
-    ['getExhibitionList', { startDate, endDate, text, limit }],
+    ['getExhibitionList', { startDate, endDate, text, limit, page }],
     () =>
       getExhibitionList({
         startDate,
         endDate,
         title: limit !== 'artist' ? text : undefined,
         artistName: limit !== 'title' ? text : undefined,
+        page: page,
       }),
     {
       onSuccess,
