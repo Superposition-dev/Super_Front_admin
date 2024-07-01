@@ -14,66 +14,77 @@ import { ExhibitionInfoType } from './ExhibitionDetail'
 import Modal from '../components/@common/ModalBox'
 import { IoSearch } from 'react-icons/io5'
 import ExhibitonProduct from '../components/ExhibitionProduct'
+import usePostExhibition from '../hooks/api/exhibition/usePostExhibition'
 
 export interface ProductProps {
   index: number
-  item: ProductType
+  item: ProductInfoType
 }
 
-export interface ProductType {
-  num: number
-  code: string
+export interface ProductInfoType {
+  productId: number
   title: string
-  desc: string
-  image: string
-  createAt: string
-  updateAt: string
+  picture: string
+  basicView: number
+  likeCount: number
+  orderCount: number
+  qrView: number
 }
 
-const productData: ProductType[] = [
+const productData: ProductInfoType[] = [
   {
-    num: 1,
-    code: '000000',
+    productId: 1,
     title: '달콤한 머핀이 잔뜩 올라간 케이크',
-    desc: '작품 설명입니다~',
-    image: 'https://cdn.crowdpic.net/detail-thumb/thumb_d_2F583E5543F7E19139C6FCFFBF9607A6.jpg',
-    createAt: '2024-04-20',
-    updateAt: '',
+    picture: 'https://cdn.crowdpic.net/detail-thumb/thumb_d_2F583E5543F7E19139C6FCFFBF9607A6.jpg',
+    basicView: 0,
+    qrView: 0,
+    likeCount: 0,
+    orderCount: 0,
   },
   {
-    num: 2,
-    code: '000000',
+    productId: 2,
     title: '달콤한 머핀이 잔뜩 올라간 케이크',
-    desc: '작품 설명입니다~',
-    image: 'https://i.pinimg.com/236x/9e/85/dc/9e85dcf648f3bc3b37b35ad9314c0795.jpg',
-    createAt: '2024-04-20',
-    updateAt: '',
+    picture: 'https://i.pinimg.com/236x/9e/85/dc/9e85dcf648f3bc3b37b35ad9314c0795.jpg',
+    basicView: 0,
+    qrView: 0,
+    likeCount: 0,
+    orderCount: 0,
   },
   {
-    num: 3,
-    code: '000000',
+    productId: 3,
     title: '달콤한 머핀이 잔뜩 올라간 케이크',
-    desc: '작품 설명입니다~',
-    image: 'https://cdn.pixabay.com/photo/2019/08/01/12/36/illustration-4377408_960_720.png',
-    createAt: '2024-04-20',
-    updateAt: '',
+    picture: 'https://cdn.pixabay.com/photo/2019/08/01/12/36/illustration-4377408_960_720.png',
+    basicView: 0,
+    qrView: 0,
+    likeCount: 0,
+    orderCount: 0,
   },
 ]
 
 const ExhibitionPostPage = () => {
-  const [exhibitionInfo, setExhibitionInfo] = useState<ExhibitionInfoType>()
-  const [productList, setProductList] = useState<ProductType[]>(productData)
-  const [selectedProductList, setSelectedProductList] = useState<ProductType[]>([])
+  const [exhibitionInfo, setExhibitionInfo] = useState<ExhibitionInfoType>({
+    title: '',
+    subHeading: '',
+    startDate: '',
+    endDate: '',
+    location: '',
+    status: '',
+    products: [],
+    poster: '',
+    file: null,
+  })
+  const [productList, setProductList] = useState<ProductInfoType[]>()
+  const [selectedProductList, setSelectedProductList] = useState<ProductInfoType[]>([])
   const [previewImage, setPreviewImage] = useState<string | null>(null)
-  const [image, setImage] = useState<File | null>(null)
+  const [file, setFile] = useState<File | null>(null)
   const [height, setHeight] = useState<number>()
   const [confirm, setConfirm] = useState<boolean>(false)
   const imageRef = useRef<HTMLInputElement>(null)
   const wrapRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
 
-  const selectedProduct = (item: ProductType) => {
-    const findIdx = selectedProductList.findIndex((ele) => ele.num === item.num)
+  const selectedProduct = (item: ProductInfoType) => {
+    const findIdx = selectedProductList.findIndex((ele) => ele.productId === item.productId)
     if (findIdx === -1) {
       setSelectedProductList([...selectedProductList, item])
     } else {
@@ -86,24 +97,31 @@ const ExhibitionPostPage = () => {
     if (value === '') {
       setProductList(productData)
     } else {
-      const result = productList.filter((item) => item.code.includes(value) || item.title.includes(value))
+      const result = productList?.filter((item) => String(item.productId) === value || item.title.includes(value))
       setProductList(result)
     }
   }
 
-  const saveExhibition = () => {
-    console.log('전시 등록 ')
-    navigate('/exhibition')
-  }
+  const { onPostExhibition } = usePostExhibition({
+    params: exhibitionInfo,
+    onSuccess: (res) => {
+      console.log(res)
+      console.log('전시 등록')
+      // navigate('/exhibition')
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
 
   const memoizedProducts = useMemo(() => {
-    return productList.map((item, index) => (
+    return productList?.map((item, index) => (
       <ExhibitonProduct
-        key={item.num}
+        key={item.productId}
         item={item}
         index={index}
         selectedProduct={selectedProduct}
-        isSelected={selectedProductList.some((selectedItem) => selectedItem.num === item.num)}
+        isSelected={selectedProductList.some((selectedItem) => selectedItem.productId === item.productId)}
       />
     ))
   }, [productList, selectedProductList, selectedProduct])
@@ -111,19 +129,6 @@ const ExhibitionPostPage = () => {
   useEffect(() => {
     setHeight(wrapRef?.current?.clientHeight)
   }, [wrapRef?.current])
-
-  useEffect(() => {
-    setExhibitionInfo({
-      title: '',
-      subHeading: '',
-      startDate: '',
-      endDate: '',
-      location: '',
-      status: '',
-      poster: '',
-      products: [],
-    })
-  }, [])
 
   console.log(exhibitionInfo)
 
@@ -162,7 +167,7 @@ const ExhibitionPostPage = () => {
                     if (!prev) {
                       return prev
                     }
-                    return { ...prev, subTitle: e.target.value }
+                    return { ...prev, subHeading: e.target.value }
                   })
                 }
               />
@@ -238,13 +243,13 @@ const ExhibitionPostPage = () => {
                 <p>
                   <span className="text-sm">선택한 작품 {selectedProductList.length}</span>
                   <span className="text-sm">{' / '}</span>
-                  <span className="text-sm">전체 {productList.length}</span>
+                  <span className="text-sm">전체 {productList?.length}</span>
                 </p>
                 <div className="flex items-center gap-3 ml-auto w-[30%] h-8 px-3 border rounded-md text-sm overflow-hidden">
                   <IoSearch className="w-5 h-5 text-gray-500" />
                   <input
                     className="relative -top-[1px] w-full h-full"
-                    placeholder="작품 코드 및 제목을 검색할 수 있어요."
+                    placeholder="작품 번호 및 제목을 검색할 수 있어요."
                     onChange={(e) => {
                       searchedProduct(e.target.value)
                     }}
@@ -256,7 +261,7 @@ const ExhibitionPostPage = () => {
                   className={cn(
                     'grid grid-cols-4 gap-0.5 relative w-full 2xl:h-[470px] h-[410px] overflow-auto pt-0 rounded-lg bg-gray-50 border border-default border-opacity-5',
                   )}
-                  style={{ gridTemplateRows: `repeat(${Math.ceil(productList.length / 4)}, 250px)` }}
+                  style={{ gridTemplateRows: `repeat(${Math.ceil(productList ? productList?.length / 4 : 0)}, 250px)` }}
                 >
                   {memoizedProducts}
                 </div>
@@ -301,14 +306,18 @@ const ExhibitionPostPage = () => {
                   )}
                   src={customDefaultImg(previewImage ? previewImage : exhibitionInfo ? exhibitionInfo?.poster : '')}
                 />
-                <ImageInput setImage={setImage} setPreviewImg={setPreviewImage} imageRef={imageRef} />
+                <ImageInput setFile={setFile} setPreviewImg={setPreviewImage} imageRef={imageRef} />
               </div>
             </div>
           </div>
         </div>
       </div>
       {confirm && (
-        <Modal setState={setConfirm} value={{ yes: '등록', no: '취소' }} handler={() => saveExhibition()}>
+        <Modal
+          setState={setConfirm}
+          value={{ yes: '등록', no: '취소' }}
+          handler={() => exhibitionInfo && onPostExhibition()}
+        >
           <p>전시를 등록하시겠어요?</p>
         </Modal>
       )}

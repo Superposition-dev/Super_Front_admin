@@ -11,6 +11,7 @@ import Pagination from '../components/@common/Pagination'
 import Toggle from '../components/@common/atom/Toggle'
 import useExhibitionList from '../hooks/api/exhibition/useExhibitionList'
 import useChangeDisplayStatus from '../hooks/api/exhibition/useChangeDisplayStatus'
+import useDeleteExhibition from '../hooks/api/exhibition/useDeleteExhibition'
 
 export interface ExhibitionType {
   select: false
@@ -20,7 +21,7 @@ export interface ExhibitionType {
   startDate: string
   endDate: string
   location: string
-  status: '전시 예정' | '전시 중' | '전시 종료'
+  status: 'prev' | 'current' | 'end'
   isDisplay: boolean
 }
 
@@ -32,10 +33,10 @@ const ExhibitionPage = () => {
   const [endDate, setEndDate] = useState<string>()
   const [text, setText] = useState<string>()
   const [limit, setLimit] = useState<string>('title')
-  const [isFilter, setIsFilter] = useState<'all' | 'expected' | 'presented' | 'closed'>('all')
-  const [active, setActive] = useState<boolean>(false)
+  const [isStatus, setIsStatus] = useState<'all' | 'prev' | 'current' | 'end'>('all')
   const [totalCount, setTotalCount] = useState<number>(0)
-  const [findCount, setFindCount] = useState<number>(0)
+  const [page, setPage] = useState<number>(1)
+  const [totalPages, setTotalPages] = useState<number>(0)
   const selectRefs = useRef<any[]>([])
   const toggleRefs = useRef<any[]>([])
   const navigate = useNavigate()
@@ -95,17 +96,20 @@ const ExhibitionPage = () => {
   }
 
   const { refetch: refetchReset } = useExhibitionList({
+    page: page,
     enabled: false,
     onSuccess: (data) => {
-      setOriginList(data.findExhibitions)
-      setSearchedList(data.findExhibitions)
+      console.log(data)
+      setOriginList(data.data)
+      setSearchedList(data.data)
       setStartDate(undefined)
       setEndDate(undefined)
       setText(undefined)
       setLimit('title')
-      setIsFilter('all')
+      setIsStatus('all')
       setTotalCount(data.totalCount)
-      setFindCount(data.findResultCount)
+      setPage(data.pageIndex)
+      setTotalPages(data.totalPage)
     },
     onError: (error) => {
       console.log(error)
@@ -120,12 +124,14 @@ const ExhibitionPage = () => {
     endDate,
     text,
     limit,
+    page,
     enabled: false,
     onSuccess: (data) => {
-      setOriginList(data.findExhibitions)
-      setSearchedList(data.findExhibitions)
+      setOriginList(data.data)
+      setSearchedList(data.data)
       setTotalCount(data.totalCount)
-      setFindCount(data.findResultCount)
+      setPage(data.pageIndex)
+      setTotalPages(data.totalPage)
     },
     onError: (error) => {
       console.log(error)
@@ -142,27 +148,31 @@ const ExhibitionPage = () => {
     },
   })
 
+  const { onDeleteExhibiton } = useDeleteExhibition({
+    onSuccess: (res) => {
+      console.log(res)
+      getExhibitionList()
+      setSelectedList([])
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
   const getFiltered = useCallback(() => {
-    const status =
-      isFilter === 'expected'
-        ? '전시 예정'
-        : isFilter === 'presented'
-          ? '전시중'
-          : isFilter === 'closed'
-            ? '전시 종료'
-            : '전체'
-    const filterList = originList.filter((item) => (status !== '전체' ? item.status === status : item))
+    const filterList = originList.filter((item) => (isStatus !== 'all' ? item.status === isStatus : item))
     setSearchedList(filterList)
-  }, [isFilter])
+  }, [isStatus])
 
   useEffect(() => {
     getExhibitionList()
+    setIsStatus('all')
   }, [])
 
   useEffect(() => {
     if (selectedList === undefined) return
     getFiltered()
-  }, [isFilter])
+  }, [isStatus])
 
   return (
     <Wrapper title="전시관리">
@@ -184,25 +194,25 @@ const ExhibitionPage = () => {
             <div className="flex flex-row justify-start gap-2">
               <Button
                 name="전체"
-                customType={isFilter === 'all' ? type.fill : type.white}
+                customType={isStatus === 'all' ? type.fill : type.white}
                 onClick={() => {
-                  setIsFilter('all')
+                  setIsStatus('all')
                 }}
               />
               <Button
                 name="전시 예정"
-                customType={isFilter === 'expected' ? type.fill : type.white}
-                onClick={() => setIsFilter('expected')}
+                customType={isStatus === 'prev' ? type.fill : type.white}
+                onClick={() => setIsStatus('prev')}
               />
               <Button
                 name="전시 중"
-                customType={isFilter === 'presented' ? type.fill : type.white}
-                onClick={() => setIsFilter('presented')}
+                customType={isStatus === 'current' ? type.fill : type.white}
+                onClick={() => setIsStatus('current')}
               />
               <Button
                 name="전시 종료"
-                customType={isFilter === 'closed' ? type.fill : type.white}
-                onClick={() => setIsFilter('closed')}
+                customType={isStatus === 'end' ? type.fill : type.white}
+                onClick={() => setIsStatus('end')}
               />
             </div>
             <Button
@@ -216,11 +226,16 @@ const ExhibitionPage = () => {
             <TInteraction
               search={{ name: '검색 건수', value: searchedList.length }}
               total={{ name: '전체', value: totalCount }}
-              date={{ name: '검색일자', value: '2023.01.01 - 2024.04.01' }}
+              date={startDate && endDate ? { name: '검색일자', value: `${startDate} ~ ${endDate}` } : undefined}
             />
             <div className="flex flex-col items-center justify-between gap-2 w-full h-[83%] border-y border-default border-opacity-5">
-              <Table thead={THeadData} index={false} addClass="h-[91%]">
-                {originList !== searchedList
+              <Table thead={THeadData} index={false} addClass="h-[91%] relative">
+                {(searchedList.length === 0 || originList.length === 0) && (
+                  <div className="absolute flex items-center justify-center w-full h-full bg-gray-50">
+                    전시 목록이 존재하지 않아요.
+                  </div>
+                )}
+                {searchedList !== originList
                   ? searchedList?.map((item, index) => {
                       return (
                         <Tr
@@ -241,13 +256,15 @@ const ExhibitionPage = () => {
                           <Td value={item.startDate} />
                           <Td value={item.endDate} />
                           <Td value={item.location} />
-                          <Td value={item.status} />
+                          <Td>
+                            {item.status === 'prev' ? '전시 예정' : item.status === 'current' ? '전시 중' : '전시 종료'}
+                          </Td>
                           <Td>
                             <Toggle
                               active={item.isDisplay}
                               addClass="w-[70px] h-[36px]"
                               toggleRef={(element: any) => (toggleRefs.current[index] = element)}
-                              onClick={() => setActive(!active)}
+                              onClick={() => onChangeDisplayStatus(item.exhibitionId, !item.isDisplay)}
                             />
                           </Td>
                         </Tr>
@@ -273,13 +290,15 @@ const ExhibitionPage = () => {
                           <Td value={item.startDate} />
                           <Td value={item.endDate} />
                           <Td value={item.location} />
-                          <Td value={item.status} />
+                          <Td>
+                            {item.status === 'prev' ? '전시 예정' : item.status === 'current' ? '전시 중' : '전시 종료'}
+                          </Td>
                           <Td>
                             <Toggle
                               active={item.isDisplay}
                               addClass="w-[70px] h-[36px]"
                               toggleRef={(element: any) => (toggleRefs.current[index] = element)}
-                              onClick={() => onChangeDisplayStatus(item.exhibitionId)}
+                              onClick={() => onChangeDisplayStatus(item.exhibitionId, !item.isDisplay)}
                             />
                           </Td>
                         </Tr>
@@ -291,11 +310,19 @@ const ExhibitionPage = () => {
                   name="선택 삭제"
                   customType={type.empty}
                   addClass="px-3 py-1.5 text-sm"
-                  onClick={() => console.log('선택 삭제 버튼 클릭')}
+                  onClick={() => {
+                    onDeleteExhibiton(
+                      selectedList
+                        .map((item) => {
+                          return item.exhibitionId
+                        })
+                        .join(','),
+                    )
+                  }}
                 />
               </div>
             </div>
-            <Pagination totalItems={totalCount} page={1} />
+            <Pagination page={page} totalPages={totalPages} itemsPerPage={10} totalItems={totalCount} />
           </section>
         </div>
       </div>

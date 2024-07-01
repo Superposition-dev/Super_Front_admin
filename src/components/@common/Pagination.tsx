@@ -1,15 +1,17 @@
 import usePagination from '@lucasmogari/react-pagination'
 import PaginationLink from './PaginationLink'
 interface PaginationProps {
-  totalItems: number
   page?: number
+  totalPages: number
+  itemsPerPage: number
+  totalItems: number
 }
 const Pagination = ({ totalItems, page = 1 }: PaginationProps) => {
   const { getPageItem, totalPages } = usePagination({
-    totalItems,
     page,
+    totalPages: 5,
     itemsPerPage: 10,
-    maxPageItems: 5,
+    totalItems,
   })
 
   const firstPage = 1

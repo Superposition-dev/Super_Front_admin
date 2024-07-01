@@ -14,7 +14,6 @@ import Tr from '../components/@common/table/Tr'
 import Td from '../components/@common/table/Td'
 import { CSVLink } from 'react-csv'
 import ImageInput from '../components/@common/row/ImageInput'
-import { ProductType } from './ExhibitionPost'
 import { IoSearch } from 'react-icons/io5'
 import useExhibitionDetail from '../hooks/api/exhibition/useExhibitionDetail'
 import ExhibitonProduct from '../components/ExhibitionProduct'
@@ -29,54 +28,26 @@ export interface ExhibitionInfoType {
   status: string
   poster: string
   products: ProductInfoType[]
+  file: File | null
 }
 
 export interface ProductInfoType {
+  productId: number
+  title: string
+  picture: string
   basicView: number
   likeCount: number
   orderCount: number
-  productId: number
   qrView: number
-  title: string
 }
-
-const productData: ProductType[] = [
-  {
-    num: 1,
-    code: '000000',
-    title: '달콤한 머핀이 잔뜩 올라간 케이크',
-    desc: '작품 설명입니다~',
-    image: 'https://cdn.crowdpic.net/detail-thumb/thumb_d_2F583E5543F7E19139C6FCFFBF9607A6.jpg',
-    createAt: '2024-04-20',
-    updateAt: '',
-  },
-  {
-    num: 2,
-    code: '000000',
-    title: '달콤한 머핀이 잔뜩 올라간 케이크',
-    desc: '작품 설명입니다~',
-    image: 'https://i.pinimg.com/236x/9e/85/dc/9e85dcf648f3bc3b37b35ad9314c0795.jpg',
-    createAt: '2024-04-20',
-    updateAt: '',
-  },
-  {
-    num: 3,
-    code: '000000',
-    title: '달콤한 머핀이 잔뜩 올라간 케이크',
-    desc: '작품 설명입니다~',
-    image: 'https://cdn.pixabay.com/photo/2019/08/01/12/36/illustration-4377408_960_720.png',
-    createAt: '2024-04-20',
-    updateAt: '',
-  },
-]
 
 const ExhibitionDetailPage = () => {
   const [originInfo, setOriginInfo] = useState<ExhibitionInfoType>()
   const [exhibitionInfo, setExhibitionInfo] = useState<ExhibitionInfoType>()
-  const [productList, setProductList] = useState<ProductType[]>(productData)
-  const [selectedProductList, setSelectedProductList] = useState<ProductType[]>([])
+  const [productList, setProductList] = useState<ProductInfoType[]>()
+  const [selectedProductList, setSelectedProductList] = useState<ProductInfoType[]>([])
   const [edit, setEdit] = useState<boolean>(false)
-  const [image, setImage] = useState<File | null>(null)
+  const [file, setFile] = useState<File | null>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [height, setHeight] = useState<number>()
   const navigate = useNavigate()
@@ -107,15 +78,15 @@ const ExhibitionDetailPage = () => {
 
   const searchedProduct = (value: string) => {
     if (value === '') {
-      setProductList(productData)
+      setProductList(originInfo?.products)
     } else {
-      const result = productList.filter((item) => item.code.includes(value) || item.title.includes(value))
+      const result = productList?.filter((item) => String(item.productId) === value || item.title.includes(value))
       setProductList(result)
     }
   }
 
-  const selectedProduct = (item: ProductType) => {
-    const findIdx = selectedProductList.findIndex((ele) => ele.num === item.num)
+  const selectedProduct = (item: ProductInfoType) => {
+    const findIdx = selectedProductList.findIndex((ele) => ele.productId === item.productId)
     if (findIdx === -1) {
       setSelectedProductList([...selectedProductList, item])
     } else {
@@ -128,8 +99,10 @@ const ExhibitionDetailPage = () => {
     exhibitionId: Number(path),
     enabled: false,
     onSuccess: (data) => {
+      console.log(data)
       setOriginInfo(data)
       setExhibitionInfo(data)
+      setProductList(data.products)
     },
     onError: (error) => {
       console.log(error)
@@ -137,13 +110,13 @@ const ExhibitionDetailPage = () => {
   })
 
   const memoizedProducts = useMemo(() => {
-    return productList.map((item, index) => (
+    return productList?.map((item, index) => (
       <ExhibitonProduct
-        key={item.num}
+        key={item.productId}
         item={item}
         index={index}
         selectedProduct={selectedProduct}
-        isSelected={selectedProductList.some((selectedItem) => selectedItem.num === item.num)}
+        isSelected={selectedProductList.some((selectedItem) => selectedItem.productId === item.productId)}
       />
     ))
   }, [productList, selectedProductList, selectedProduct])
@@ -274,7 +247,7 @@ const ExhibitionDetailPage = () => {
                   <p>
                     <span className="text-sm">선택한 작품 {selectedProductList.length}</span>
                     <span className="text-sm">{' / '}</span>
-                    <span className="text-sm">전체 {productList.length}</span>
+                    <span className="text-sm">전체 {productList?.length}</span>
                   </p>
                   <div className="flex items-center gap-3 ml-auto w-[30%] h-8 px-3 border rounded-md text-sm overflow-hidden">
                     <IoSearch className="w-5 h-5 text-gray-500" />
@@ -289,10 +262,13 @@ const ExhibitionDetailPage = () => {
                 </div>
                 {productList?.length !== 0 ? (
                   <div
+                    key={1}
                     className={cn(
                       'grid grid-cols-4 gap-0.5 relative w-full 2xl:h-[470px] h-[410px] overflow-auto pt-0 rounded-lg bg-gray-50 border border-gray-200',
                     )}
-                    style={{ gridTemplateRows: `repeat(${Math.ceil(productList.length / 4)}, 250px)` }}
+                    style={{
+                      gridTemplateRows: `repeat(${Math.ceil(productList ? productList.length / 4 : 0)}, 250px)`,
+                    }}
                   >
                     {memoizedProducts}
                   </div>
@@ -398,7 +374,7 @@ const ExhibitionDetailPage = () => {
                   )}
                   src={customDefaultImg(previewImage ? previewImage : exhibitionInfo ? exhibitionInfo?.poster : '')}
                 />
-                {edit && <ImageInput setImage={setImage} setPreviewImg={setPreviewImage} imageRef={imageRef} />}
+                {edit && <ImageInput setFile={setFile} setPreviewImg={setPreviewImage} imageRef={imageRef} />}
               </div>
             </div>
           </div>
