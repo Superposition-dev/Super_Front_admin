@@ -7,7 +7,7 @@ import Table, { TBodyType, THeadType } from '../components/@common/table/Table'
 import Tr from '../components/@common/table/Tr'
 import Td from '../components/@common/table/Td'
 import Button, { type } from '../components/@common/atom/Button'
-import Pagination from '../components/@common/Pagination'
+import Pagination from '../components/@common/pagination/Pagination'
 
 const UserPage = () => {
   const [selectedList, setSelectedList] = useState<TBodyType[]>([])

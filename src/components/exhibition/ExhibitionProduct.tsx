@@ -1,8 +1,8 @@
 import { memo, useState, useRef } from 'react'
 import { FaCheckCircle } from 'react-icons/fa'
-import cn from '../lib/tailwindUtil'
-import { customDefaultImg } from '../utils/util'
-import { ProductInfoType } from '../pages/ExhibitionDetail'
+import cn from '../../lib/tailwindUtil'
+import { customDefaultImg } from '../../utils/util'
+import { ProductInfoType } from '../../pages/ExhibitionDetail'
 
 interface ExhibitionProductProps {
   item: ProductInfoType

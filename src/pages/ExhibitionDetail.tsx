@@ -16,7 +16,7 @@ import { CSVLink } from 'react-csv'
 import ImageInput from '../components/@common/row/ImageInput'
 import { IoSearch } from 'react-icons/io5'
 import useExhibitionDetail from '../hooks/api/exhibition/useExhibitionDetail'
-import ExhibitonProduct from '../components/ExhibitionProduct'
+import ExhibitonProduct from '../components/exhibition/ExhibitionProduct'
 
 export interface ExhibitionInfoType {
   exhibitionId?: number

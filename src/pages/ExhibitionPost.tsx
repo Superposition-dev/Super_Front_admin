@@ -12,7 +12,7 @@ import RadioInput from '../components/@common/row/RadioInput'
 import ImageInput from '../components/@common/row/ImageInput'
 import Modal from '../components/@common/ModalBox'
 import { IoSearch } from 'react-icons/io5'
-import ExhibitonProduct from '../components/ExhibitionProduct'
+import ExhibitonProduct from '../components/exhibition/ExhibitionProduct'
 import usePostExhibition from '../hooks/api/exhibition/usePostExhibition'
 import useProductList from '../hooks/api/product/useProductList'
 
