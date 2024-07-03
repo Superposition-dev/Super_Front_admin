@@ -1,20 +1,21 @@
 import { UseQueryOptions, useMutation } from 'react-query'
 import { postExhibition } from './exhibition'
-import { ExhibitionInfoType } from '../../../pages/ExhibitionDetail'
+import { ExhibitionPostInfoType } from '../../../pages/ExhibitionPost'
 
 interface postExhibitionParams {
   endDate: string
   location: string
-  productIds: number[]
+  products: number[]
   startDate: string
   status: string
   subHeading: string
   title: string
   file: File | null
+  poster?: string
 }
 
 interface usePostExhibitonParams extends UseQueryOptions<any, any> {
-  params: ExhibitionInfoType
+  params: postExhibitionParams
   onSuccess?: (data: any) => void
   onError?: (error: any) => void
 }
@@ -28,9 +29,7 @@ const usePostExhibition = ({ params, onSuccess, onError }: usePostExhibitonParam
     location: params.location,
     status: params.status,
     file: params.file,
-    productIds: params.products.map((item) => {
-      return item.productId
-    }),
+    products: params.products,
   }
   const mutation = useMutation({
     mutationFn: () => postExhibition(mutationParams),

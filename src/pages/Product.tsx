@@ -7,18 +7,25 @@ import Table, { TBodyType, TProductBodyType } from '../components/@common/table/
 import Tr from '../components/@common/table/Tr'
 import Td from '../components/@common/table/Td'
 import Button, { type } from '../components/@common/atom/Button'
-import Pagination from '../components/@common/Pagination'
+import Pagination from '../components/@common/pagination/Pagination'
 
 const ProductPage = () => {
   const [selectedList, setSelectedList] = useState<TBodyType[]>([])
   const [startDate, setStartDate] = useState<string>()
   const [endDate, setEndDate] = useState<string>()
   const [text, setText] = useState<string>()
-  const [limit, setLimit] = useState<string>()
+  const [limit, setLimit] = useState<string>('title')
+  const [page, setPage] = useState<number>(1)
+  const [totalCount, setTotalCount] = useState<number>(0)
+  const [totalPages, setTotalPages] = useState<number>(0)
   const selectRefs = useRef<any[]>([])
   const navigate = useNavigate()
 
-  const filter = ['전체', '작가명', 'ID']
+  const filter = [
+    { name: '작품명', type: 'title' },
+    { name: '작품 ID', type: 'productId' },
+    { name: '작가명', type: 'artist' },
+  ]
 
   const state = {
     startDate,
@@ -45,12 +52,60 @@ const ProductPage = () => {
   ]
 
   const TBodyData = [
-    { select: false, title: '작품1',author:'김테스트' ,tags: ['태그','태그','태그'], pictureInfo: '캔버스에 유채화', price: '10,000',productId: 1 },
-    { select: false, title: '작품2',author:'김테스트' ,tags: ['태그','태그','태그'], pictureInfo: '캔버스에 유채화', price: '10,000',productId: 2 },
-    { select: false, title: '작품3',author:'김테스트' ,tags: ['태그','태그','태그'], pictureInfo: '캔버스에 유채화', price: '10,000',productId: 3 },
-    { select: false, title: '작품4',author:'김테스트' ,tags: ['태그','태그','태그'], pictureInfo: '캔버스에 유채화', price: '10,000',productId: 4 },
-    { select: false, title: '작품5',author:'김테스트' ,tags: ['태그','태그','태그'], pictureInfo: '캔버스에 유채화', price: '10,000',productId: 5 },
-    { select: false, title: '작품6',author:'김테스트' ,tags: ['태그','태그','태그'], pictureInfo: '캔버스에 유채화', price: '10,000',productId: 6 },
+    {
+      select: false,
+      title: '작품1',
+      author: '김테스트',
+      tags: ['태그', '태그', '태그'],
+      pictureInfo: '캔버스에 유채화',
+      price: '10,000',
+      productId: 1,
+    },
+    {
+      select: false,
+      title: '작품2',
+      author: '김테스트',
+      tags: ['태그', '태그', '태그'],
+      pictureInfo: '캔버스에 유채화',
+      price: '10,000',
+      productId: 2,
+    },
+    {
+      select: false,
+      title: '작품3',
+      author: '김테스트',
+      tags: ['태그', '태그', '태그'],
+      pictureInfo: '캔버스에 유채화',
+      price: '10,000',
+      productId: 3,
+    },
+    {
+      select: false,
+      title: '작품4',
+      author: '김테스트',
+      tags: ['태그', '태그', '태그'],
+      pictureInfo: '캔버스에 유채화',
+      price: '10,000',
+      productId: 4,
+    },
+    {
+      select: false,
+      title: '작품5',
+      author: '김테스트',
+      tags: ['태그', '태그', '태그'],
+      pictureInfo: '캔버스에 유채화',
+      price: '10,000',
+      productId: 5,
+    },
+    {
+      select: false,
+      title: '작품6',
+      author: '김테스트',
+      tags: ['태그', '태그', '태그'],
+      pictureInfo: '캔버스에 유채화',
+      price: '10,000',
+      productId: 6,
+    },
   ]
 
   const selectedItem = (item: TBodyType) => {
@@ -80,7 +135,13 @@ const ProductPage = () => {
   return (
     <Wrapper title="작품관리">
       <div className="flex flex-col items-center justify-between gap-7 w-full h-full">
-        <Search date={'등록일정'} filter={filter} state={state} setState={setState} handler={() => console.log('조회 버튼 클릭')} />
+        <Search
+          date={'등록일정'}
+          filter={filter}
+          state={state}
+          setState={setState}
+          handler={() => console.log('조회 버튼 클릭')}
+        />
         <div className="flex flex-col items-center justify-between gap-4 w-full h-[90%]">
           <Button
             name="작품 등록"
@@ -115,9 +176,7 @@ const ProductPage = () => {
                       <Td value={item.title} />
                       <Td value={item.author} />
                       <Td value={item.tags} />
-                      <Td
-                        value={item.pictureInfo}
-                      />
+                      <Td value={item.pictureInfo} />
                       <Td value={item.price} />
                     </Tr>
                   )
@@ -138,7 +197,7 @@ const ProductPage = () => {
                 />
               </div>
             </div>
-            <Pagination totalItems={10} page={2} />
+            <Pagination page={page} totalPages={totalPages} itemsPerPage={10} totalItems={totalCount} />
           </section>
         </div>
       </div>

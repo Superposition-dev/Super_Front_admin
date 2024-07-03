@@ -10,11 +10,12 @@ import Title from '../components/@common/atom/Title'
 import { customDefaultImg } from '../utils/util'
 import RadioInput from '../components/@common/row/RadioInput'
 import ImageInput from '../components/@common/row/ImageInput'
-import { ExhibitionInfoType } from './ExhibitionDetail'
-import Modal from '../components/@common/ModalBox'
+import Modal from '../components/@common/modal/ModalBox'
 import { IoSearch } from 'react-icons/io5'
-import ExhibitonProduct from '../components/ExhibitionProduct'
+import ExhibitonProduct from '../components/exhibition/ExhibitionProduct'
 import usePostExhibition from '../hooks/api/exhibition/usePostExhibition'
+import useProductList from '../hooks/api/product/useProductList'
+import ModalPortal from '../components/@common/modal/ModalPortal'
 
 export interface ProductProps {
   index: number
@@ -29,6 +30,18 @@ export interface ProductInfoType {
   likeCount: number
   orderCount: number
   qrView: number
+}
+
+export interface ExhibitionPostInfoType {
+  exhibitionId?: number
+  title: string
+  subHeading: string
+  startDate: string
+  endDate: string
+  location: string
+  status: string
+  poster: string
+  file: File | null
 }
 
 const productData: ProductInfoType[] = [
@@ -62,19 +75,18 @@ const productData: ProductInfoType[] = [
 ]
 
 const ExhibitionPostPage = () => {
-  const [exhibitionInfo, setExhibitionInfo] = useState<ExhibitionInfoType>({
+  const [exhibitionInfo, setExhibitionInfo] = useState<ExhibitionPostInfoType>({
     title: '',
     subHeading: '',
     startDate: '',
     endDate: '',
     location: '',
     status: '',
-    products: [],
     poster: '',
     file: null,
   })
   const [productList, setProductList] = useState<ProductInfoType[]>()
-  const [selectedProductList, setSelectedProductList] = useState<ProductInfoType[]>([])
+  const [selectedProductList, setSelectedProductList] = useState<number[]>([])
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [file, setFile] = useState<File | null>(null)
   const [height, setHeight] = useState<number>()
@@ -84,9 +96,9 @@ const ExhibitionPostPage = () => {
   const navigate = useNavigate()
 
   const selectedProduct = (item: ProductInfoType) => {
-    const findIdx = selectedProductList.findIndex((ele) => ele.productId === item.productId)
+    const findIdx = selectedProductList.findIndex((ele) => ele === item.productId)
     if (findIdx === -1) {
-      setSelectedProductList([...selectedProductList, item])
+      setSelectedProductList([...selectedProductList, item.productId])
     } else {
       const deleteSelected = selectedProductList.filter((el, index) => index !== findIdx)
       setSelectedProductList(deleteSelected)
@@ -103,11 +115,23 @@ const ExhibitionPostPage = () => {
   }
 
   const { onPostExhibition } = usePostExhibition({
-    params: exhibitionInfo,
+    params: { ...exhibitionInfo, products: selectedProductList },
     onSuccess: (res) => {
       console.log(res)
-      console.log('전시 등록')
-      // navigate('/exhibition')
+      console.log('전시 등록 완료')
+      navigate('/exhibition')
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
+  const { refetch: getProductList } = useProductList({
+    page: 1,
+    size: 8,
+    enabled: false,
+    onSuccess: (data) => {
+      setProductList(data.data)
     },
     onError: (error) => {
       console.log(error)
@@ -121,16 +145,27 @@ const ExhibitionPostPage = () => {
         item={item}
         index={index}
         selectedProduct={selectedProduct}
-        isSelected={selectedProductList.some((selectedItem) => selectedItem.productId === item.productId)}
+        isSelected={selectedProductList.some((selectedItem) => selectedItem === item.productId)}
       />
     ))
   }, [productList, selectedProductList, selectedProduct])
 
   useEffect(() => {
+    getProductList()
+  }, [])
+
+  useEffect(() => {
     setHeight(wrapRef?.current?.clientHeight)
   }, [wrapRef?.current])
 
-  console.log(exhibitionInfo)
+  useEffect(() => {
+    setExhibitionInfo((prev) => {
+      if (!prev) {
+        return prev
+      }
+      return { ...prev, file: file }
+    })
+  }, [file])
 
   return (
     <Wrapper title="전시 등록">
@@ -226,13 +261,16 @@ const ExhibitionPostPage = () => {
                 name="statue"
                 title="전시 상태"
                 value={exhibitionInfo?.status}
-                values={['전시 예정', '전시중', '전시 종료']}
+                values={['prev', 'current', 'end']}
                 onChange={(e) => {
                   setExhibitionInfo((prev) => {
                     if (!prev) {
                       return prev
                     }
-                    return { ...prev, status: e.target.value as 'prev' | 'current' | 'done' }
+                    return {
+                      ...prev,
+                      status: e.target.value,
+                    }
                   })
                 }}
               />
@@ -313,13 +351,15 @@ const ExhibitionPostPage = () => {
         </div>
       </div>
       {confirm && (
-        <Modal
-          setState={setConfirm}
-          value={{ yes: '등록', no: '취소' }}
-          handler={() => exhibitionInfo && onPostExhibition()}
-        >
-          <p>전시를 등록하시겠어요?</p>
-        </Modal>
+        <ModalPortal>
+          <Modal
+            setState={setConfirm}
+            value={{ yes: '등록', no: '취소' }}
+            handler={() => exhibitionInfo && onPostExhibition()}
+          >
+            <p>전시를 등록하시겠어요?</p>
+          </Modal>
+        </ModalPortal>
       )}
     </Wrapper>
   )

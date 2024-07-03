@@ -1,12 +1,13 @@
 import { UseQueryOptions, useQuery } from 'react-query'
-import { getExhibitionList } from './exhibition'
+import { getProductList } from './product'
 
-interface useExhibitionListParams extends UseQueryOptions<any, any> {
+interface useProductListParams extends UseQueryOptions<any, any> {
   startDate?: string
   endDate?: string
   text?: string
   limit?: string
   page?: number
+  size?: number
   onSuccess?: (data: any) => void
   onError?: (error: any) => void
   enabled?: boolean
@@ -15,28 +16,31 @@ interface useExhibitionListParams extends UseQueryOptions<any, any> {
   refetchOnMount?: boolean
 }
 
-const useExhibitionList = ({
+const useProductList = ({
   startDate,
   endDate,
   text,
   limit,
   page,
+  size,
   onSuccess,
   onError,
   enabled,
   refetchOnWindowFocus,
   refetchOnReconnect,
   refetchOnMount,
-}: useExhibitionListParams) => {
+}: useProductListParams) => {
   return useQuery(
-    ['getExhibitionList', { startDate, endDate, text, limit, page }],
+    ['getProductList', { startDate, endDate, text, limit, page, size }],
     () =>
-      getExhibitionList({
-        startDate,
-        endDate,
+      getProductList({
+        startDate: startDate ? startDate : undefined,
+        endDate: endDate ? endDate : undefined,
         title: limit === 'title' ? text : undefined,
         artistName: limit === 'artist' ? text : undefined,
+        productId: limit === 'productId' ? Number(text) : undefined,
         page: page,
+        size: size,
       }),
     {
       onSuccess,
@@ -49,4 +53,4 @@ const useExhibitionList = ({
   )
 }
 
-export default useExhibitionList
+export default useProductList

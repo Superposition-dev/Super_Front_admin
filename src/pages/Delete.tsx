@@ -7,7 +7,7 @@ import Table, { TBodyType, THeadType } from '../components/@common/table/Table'
 import Tr from '../components/@common/table/Tr'
 import Td from '../components/@common/table/Td'
 import Button, { type } from '../components/@common/atom/Button'
-import Pagination from '../components/@common/Pagination'
+import Pagination from '../components/@common/pagination/Pagination'
 
 const DeletePage = () => {
   const [selectedList, setSelectedList] = useState<TBodyType[]>([])
@@ -73,7 +73,13 @@ const DeletePage = () => {
   return (
     <Wrapper title="탈퇴관리">
       <div className="flex flex-col items-center justify-between gap-7 w-full h-full">
-        <Search date={'탈퇴일정'} filter={filter} state={state} setState={setState} handler={() => console.log('조회 버튼 클릭')} />
+        <Search
+          date={'탈퇴일정'}
+          filter={filter}
+          state={state}
+          setState={setState}
+          handler={() => console.log('조회 버튼 클릭')}
+        />
         <div className="flex flex-col items-center justify-between gap-4 w-full h-[90%]">
           <section className="flex flex-col items-center justify-between gap-3 w-full 2xl:h-[92%] h-[90%] p-5 rounded-2xl bg-white shadow-light">
             <TInteraction
@@ -85,9 +91,7 @@ const DeletePage = () => {
               <Table thead={THeadData} tbody={TBodyData} index={false} addClass="h-[91%]">
                 {TBodyData.map((item, index) => {
                   return (
-                    <Tr
-                      key={index}
-                    >
+                    <Tr key={index}>
                       <Td
                         type="checkbox"
                         defaultChecked={item.select}

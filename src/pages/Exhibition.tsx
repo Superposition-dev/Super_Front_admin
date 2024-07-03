@@ -7,7 +7,7 @@ import TInteraction from '../components/@common/table/TInteraction'
 import Table, { THeadType } from '../components/@common/table/Table'
 import Tr from '../components/@common/table/Tr'
 import Td from '../components/@common/table/Td'
-import Pagination from '../components/@common/Pagination'
+import Pagination from '../components/@common/pagination/Pagination'
 import Toggle from '../components/@common/atom/Toggle'
 import useExhibitionList from '../hooks/api/exhibition/useExhibitionList'
 import useChangeDisplayStatus from '../hooks/api/exhibition/useChangeDisplayStatus'
@@ -34,8 +34,8 @@ const ExhibitionPage = () => {
   const [text, setText] = useState<string>()
   const [limit, setLimit] = useState<string>('title')
   const [isStatus, setIsStatus] = useState<'all' | 'prev' | 'current' | 'end'>('all')
-  const [totalCount, setTotalCount] = useState<number>(0)
   const [page, setPage] = useState<number>(1)
+  const [totalCount, setTotalCount] = useState<number>(0)
   const [totalPages, setTotalPages] = useState<number>(0)
   const selectRefs = useRef<any[]>([])
   const toggleRefs = useRef<any[]>([])
@@ -61,7 +61,7 @@ const ExhibitionPage = () => {
   const THeadData: THeadType[] = [
     { name: '선택', width: 5 },
     { name: '번호', width: 5 },
-    { name: '전시 명', width: 15 },
+    { name: '전시명', width: 15 },
     { name: '부제목', width: 20 },
     { name: '시작 일자', width: 13.75 },
     { name: '종료 일자', width: 13.75 },

@@ -20,7 +20,7 @@ export interface AuthorInfoType {
   message: string | null
   introduction: string | null
   userAccount: string | null
-  image: string | null
+  image: string
   isUser: boolean
   createAt: string
   updateAt: string
@@ -32,7 +32,7 @@ const data: AuthorInfoType = {
   message: '슈퍼맨 입니다.',
   introduction: null,
   userAccount: null,
-  image: null,
+  image: '',
   isUser: false,
   createAt: dateFormat(new Date()),
   updateAt: '-',
@@ -42,8 +42,8 @@ const AuthorDetailPage = () => {
   const [authorInfo, setAuthorInfo] = useState<AuthorInfoType>(data)
   const [edit, setEdit] = useState<boolean>(false)
   const [registed, setRegisted] = useState<boolean>()
-  const [image, setImage] = useState<File | null>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
+  const [file, setFile] = useState<File | null>(null)
   const navigate = useNavigate()
   const imageRef = useRef<HTMLInputElement>(null)
 
@@ -191,8 +191,14 @@ const AuthorDetailPage = () => {
                 )}
                 onClick={() => imageRef.current?.click()}
               >
-                <img className="w-48 h-48" src={customDefaultImg(previewImage ? previewImage : authorInfo.image)} />
-                {edit && <ImageInput setImage={setImage} setPreviewImg={setPreviewImage} imageRef={imageRef} />}
+                <img
+                  className={cn(
+                    'object-contain',
+                    previewImage ? 'w-full h-full' : authorInfo ? 'w-full h-full' : 'w-40 h-40',
+                  )}
+                  src={customDefaultImg(previewImage ? previewImage : authorInfo ? authorInfo?.image : '')}
+                />
+                {edit && <ImageInput setFile={setFile} setPreviewImg={setPreviewImage} imageRef={imageRef} />}
               </div>
             </div>
             <div className="flex flex-col gap-2 justify-between w-full h-[43%]">

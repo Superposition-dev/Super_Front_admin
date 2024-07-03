@@ -1,5 +1,4 @@
 import cn from '../../../lib/tailwindUtil'
-import Button, { type } from '../atom/Button'
 
 export interface ButtonType {
   title: string
@@ -33,7 +32,7 @@ const RadioInput = ({ title, values, constant, onChange, disabled, ...props }: I
               onChange={onChange}
               disabled={disabled}
             />
-            <span>{data}</span>
+            <span>{data === 'prev' ? '전시 예정' : data === 'current' ? '전시 중' : 'done' ? '전시 종료' : ''}</span>
           </label>
         ))}
       </div>

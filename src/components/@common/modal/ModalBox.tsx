@@ -1,5 +1,5 @@
 import React from 'react'
-import cn from '../../lib/tailwindUtil'
+import cn from '../../../lib/tailwindUtil'
 
 interface ModalProps {
   children: React.ReactNode
