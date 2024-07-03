@@ -14,11 +14,18 @@ const ProductPage = () => {
   const [startDate, setStartDate] = useState<string>()
   const [endDate, setEndDate] = useState<string>()
   const [text, setText] = useState<string>()
-  const [limit, setLimit] = useState<string>()
+  const [limit, setLimit] = useState<string>('title')
+  const [page, setPage] = useState<number>(1)
+  const [totalCount, setTotalCount] = useState<number>(0)
+  const [totalPages, setTotalPages] = useState<number>(0)
   const selectRefs = useRef<any[]>([])
   const navigate = useNavigate()
 
-  const filter = ['전체', '작가명', 'ID']
+  const filter = [
+    { name: '작품명', type: 'title' },
+    { name: '작품 ID', type: 'productId' },
+    { name: '작가명', type: 'artist' },
+  ]
 
   const state = {
     startDate,
@@ -190,7 +197,7 @@ const ProductPage = () => {
                 />
               </div>
             </div>
-            <Pagination totalItems={10} page={2} />
+            <Pagination page={page} totalPages={totalPages} itemsPerPage={10} totalItems={totalCount} />
           </section>
         </div>
       </div>

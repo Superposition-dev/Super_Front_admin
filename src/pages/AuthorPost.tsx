@@ -18,7 +18,7 @@ const data: AuthorInfoType = {
   message: '',
   introduction: null,
   userAccount: null,
-  image: null,
+  image: '',
   isUser: false,
   createAt: dateFormat(new Date()),
   updateAt: '-',

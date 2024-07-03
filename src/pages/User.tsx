@@ -14,12 +14,19 @@ const UserPage = () => {
   const [startDate, setStartDate] = useState<string>()
   const [endDate, setEndDate] = useState<string>()
   const [text, setText] = useState<string>()
-  const [limit, setLimit] = useState<string>()
+  const [limit, setLimit] = useState<string>('all')
   const [isFilter, setIsFilter] = useState<boolean>(false)
+  const [page, setPage] = useState<number>(1)
+  const [totalCount, setTotalCount] = useState<number>(0)
+  const [totalPages, setTotalPages] = useState<number>(0)
   const selectRefs = useRef<any[]>([])
   const navigate = useNavigate()
 
-  const filter = ['전체', '회원명', 'ID']
+  const filter = [
+    { name: '전체', type: 'all' },
+    { name: '회원명', type: 'name' },
+    { name: '회원 ID', type: 'id' },
+  ]
   const state = {
     startDate,
     endDate,
@@ -128,7 +135,7 @@ const UserPage = () => {
                 />
               </div>
             </div>
-            <Pagination totalItems={10} page={2} />
+            <Pagination page={page} totalPages={totalPages} itemsPerPage={10} totalItems={totalCount} />
           </section>
         </div>
       </div>

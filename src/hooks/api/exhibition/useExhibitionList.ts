@@ -34,8 +34,8 @@ const useExhibitionList = ({
       getExhibitionList({
         startDate,
         endDate,
-        title: limit !== 'artist' ? text : undefined,
-        artistName: limit !== 'title' ? text : undefined,
+        title: limit === 'title' ? text : undefined,
+        artistName: limit === 'artist' ? text : undefined,
         page: page,
       }),
     {

@@ -14,11 +14,18 @@ const AuthorPage = () => {
   const [startDate, setStartDate] = useState<string>()
   const [endDate, setEndDate] = useState<string>()
   const [text, setText] = useState<string>()
-  const [limit, setLimit] = useState<string>()
+  const [limit, setLimit] = useState<string>('all')
+  const [page, setPage] = useState<number>(1)
+  const [totalCount, setTotalCount] = useState<number>(0)
+  const [totalPages, setTotalPages] = useState<number>(0)
   const selectRefs = useRef<any[]>([])
   const navigate = useNavigate()
 
-  const filter = ['전체', '작가명', 'ID']
+  const filter = [
+    { name: '전체', type: 'all' },
+    { name: '작가명', type: 'name' },
+    { name: '작가 ID', type: 'id' },
+  ]
 
   const state = {
     startDate,
@@ -143,7 +150,7 @@ const AuthorPage = () => {
                 />
               </div>
             </div>
-            <Pagination totalItems={10} page={2} />
+            <Pagination page={page} totalPages={totalPages} itemsPerPage={10} totalItems={totalCount} />
           </section>
         </div>
       </div>
