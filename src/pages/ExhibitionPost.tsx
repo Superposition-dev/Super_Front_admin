@@ -86,6 +86,7 @@ const ExhibitionPostPage = () => {
     file: null,
   })
   const [productList, setProductList] = useState<ProductInfoType[]>()
+  const [originProductList, setOriginProductList] = useState<ProductInfoType[]>()
   const [selectedProductList, setSelectedProductList] = useState<number[]>([])
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [file, setFile] = useState<File | null>(null)
@@ -107,9 +108,9 @@ const ExhibitionPostPage = () => {
 
   const searchedProduct = (value: string) => {
     if (value === '') {
-      setProductList(productData)
+      setProductList(originProductList)
     } else {
-      const result = productList?.filter((item) => String(item.productId) === value || item.title.includes(value))
+      const result = originProductList?.filter((item) => String(item.productId) === value || item.title.includes(value))
       setProductList(result)
     }
   }
@@ -132,6 +133,7 @@ const ExhibitionPostPage = () => {
     enabled: false,
     onSuccess: (data) => {
       setProductList(data.data)
+      setOriginProductList(data.data)
     },
     onError: (error) => {
       console.log(error)
@@ -318,7 +320,7 @@ const ExhibitionPostPage = () => {
                   navigate('/exhibition')
                 }}
               />
-              <Button addClass="w-[100px]" name="저장" customType={type.fill} onClick={() => setConfirm(true)} />
+              <Button addClass="w-[100px]" name="등록" customType={type.fill} onClick={() => setConfirm(true)} />
             </div>
           </Rows>
           <div

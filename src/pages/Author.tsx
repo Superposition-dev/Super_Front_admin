@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Search from '../components/@common/atom/Search'
 import Wrapper from '../components/@common/layout/Wrapper'
@@ -8,8 +8,21 @@ import Tr from '../components/@common/table/Tr'
 import Td from '../components/@common/table/Td'
 import Button, { type } from '../components/@common/atom/Button'
 import Pagination from '../components/@common/pagination/Pagination'
+import useAuthorList from '../hooks/api/author/useAuthorList'
+import { dateFormat } from '../utils/util'
+import useDeleteAuthor from '../hooks/api/author/useDeleteAuthor'
+
+export interface AuthorType {
+  select: false
+  instagramId: number
+  name: string
+  collaborationDate: string
+  user: boolean
+}
 
 const AuthorPage = () => {
+  const [originList, setOriginList] = useState<AuthorType[]>([])
+  const [searchedList, setSearchedList] = useState<AuthorType[]>([])
   const [selectedList, setSelectedList] = useState<TBodyType[]>([])
   const [startDate, setStartDate] = useState<string>()
   const [endDate, setEndDate] = useState<string>()
@@ -71,17 +84,75 @@ const AuthorPage = () => {
     }
   }
 
-  const navigated = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, item: TBodyType, index: number) => {
+  const navigated = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, item: AuthorType, index: number) => {
     const current = e.target as HTMLElement
     const selectCurrent = selectRefs.current[index]
 
     if (current.contains(selectCurrent)) {
       return
     } else {
-      const path = item.authorId
+      const path = item.instagramId
       navigate(`${location.pathname}/${path}`)
     }
   }
+
+  const { refetch: refetchReset } = useAuthorList({
+    page: page,
+    enabled: false,
+    onSuccess: (data) => {
+      setOriginList(data.artists)
+      setSearchedList(data.artists)
+      setStartDate(undefined)
+      setEndDate(undefined)
+      setText(undefined)
+      setLimit('all')
+      setTotalCount(data.artists.length)
+      // setTotalCount(data.totalCount)
+      // setPage(data.pageIndex)
+      // setTotalPages(data.totalPage)
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  })
+
+  const { refetch: getAuthorList } = useAuthorList({
+    startDate,
+    endDate,
+    text,
+    limit,
+    page,
+    enabled: false,
+    onSuccess: (data) => {
+      setOriginList(data.artists)
+      setSearchedList(data.artists)
+      setTotalCount(data.artists.length)
+      // setTotalCount(data.totalCount)
+      // setPage(data.pageIndex)
+      // setTotalPages(data.totalPage)
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
+  const { onDeleteAuthor } = useDeleteAuthor({
+    onSuccess: (res) => {
+      console.log(res)
+      getAuthorList()
+      setSelectedList([])
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
+  useEffect(() => {
+    getAuthorList()
+  }, [])
 
   return (
     <Wrapper title="작가관리">
@@ -91,7 +162,10 @@ const AuthorPage = () => {
           date="등록일자"
           state={state}
           setState={setState}
-          handler={() => console.log('조회 버튼 클릭')}
+          handler={() => getAuthorList()}
+          resetHandler={() => {
+            refetchReset()
+          }}
         />
         <div className="flex flex-col items-center justify-between gap-4 w-full h-[90%]">
           <Button
@@ -102,38 +176,70 @@ const AuthorPage = () => {
           />
           <section className="flex flex-col items-center justify-between gap-3 w-full 2xl:h-[92%] h-[90%] p-5 rounded-2xl bg-white shadow-light">
             <TInteraction
-              search={{ name: '검색 건수', value: 5 }}
-              total={{ name: '전체', value: 20 }}
-              date={{ name: '검색일자', value: '2023.01.01 - 2024.04.01' }}
+              search={{ name: '검색 건수', value: searchedList.length }}
+              total={{ name: '전체', value: totalCount }}
+              date={startDate && endDate ? { name: '검색일자', value: `${startDate} ~ ${endDate}` } : undefined}
             />
             <div className="flex flex-col items-center justify-between gap-2 w-full h-[83%] border-y border-default border-opacity-5">
-              <Table thead={THeadData} tbody={TBodyData} index={false} addClass="h-[91%]">
-                {TBodyData.map((item, index) => {
-                  return (
-                    <Tr
-                      key={index}
-                      onClick={(e) => {
-                        navigated(e, item, index)
-                      }}
-                    >
-                      <Td
-                        type="checkbox"
-                        id={String(item.authorId)}
-                        defaultChecked={item.select}
-                        onChange={() => selectedItem(item)}
-                        selectRef={(element: any) => (selectRefs.current[index] = element)}
-                      />
-                      <Td value={index + 1} />
-                      <Td value={item.name} />
-                      <Td value={item.authorId} />
-                      <Td
-                        value={item.isUser ? 'Y' : 'N'}
-                        addClass={item.isUser ? 'text-main-medium font-bold' : 'text-default text-opacity-30'}
-                      />
-                      <Td value={item.date} />
-                    </Tr>
-                  )
-                })}
+              <Table thead={THeadData} tbody={TBodyData} index={false} addClass="h-[91%] relative">
+                {(searchedList.length === 0 || originList.length === 0) && (
+                  <div className="absolute flex items-center justify-center w-full h-full bg-gray-50">
+                    작가 목록이 존재하지 않아요.
+                  </div>
+                )}
+                {searchedList !== originList
+                  ? searchedList?.map((item, index) => {
+                      return (
+                        <Tr
+                          key={index}
+                          onClick={(e) => {
+                            navigated(e, item, index)
+                          }}
+                        >
+                          <Td
+                            type="checkbox"
+                            id={String(item.instagramId)}
+                            defaultChecked={item.select}
+                            onChange={() => selectedItem(item)}
+                            selectRef={(element: any) => (selectRefs.current[index] = element)}
+                          />
+                          <Td value={index + 1} />
+                          <Td value={item.name} />
+                          <Td value={item.instagramId} />
+                          <Td
+                            value={item.user ? 'Y' : 'N'}
+                            addClass={item.user ? 'text-main-medium font-bold' : 'text-default text-opacity-30'}
+                          />
+                          <Td value={dateFormat(new Date(item.collaborationDate))} />
+                        </Tr>
+                      )
+                    })
+                  : originList?.map((item, index) => {
+                      return (
+                        <Tr
+                          key={index}
+                          onClick={(e) => {
+                            navigated(e, item, index)
+                          }}
+                        >
+                          <Td
+                            type="checkbox"
+                            id={String(item.instagramId)}
+                            defaultChecked={item.select}
+                            onChange={() => selectedItem(item)}
+                            selectRef={(element: any) => (selectRefs.current[index] = element)}
+                          />
+                          <Td value={index + 1} />
+                          <Td value={item.name} />
+                          <Td value={item.instagramId} />
+                          <Td
+                            value={item.user ? 'Y' : 'N'}
+                            addClass={item.user ? 'text-main-medium font-bold' : 'text-default text-opacity-30'}
+                          />
+                          <Td value={dateFormat(new Date(item.collaborationDate))} />
+                        </Tr>
+                      )
+                    })}
               </Table>
               <div className="flex gap-3 self-end pb-4">
                 <Button

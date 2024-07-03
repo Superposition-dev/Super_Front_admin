@@ -24,6 +24,19 @@ type postExhibitionParams = {
   poster?: string
 }
 
+type putExhibitionParams = {
+  exhibitionId: number
+  endDate: string
+  location: string
+  products: number[]
+  startDate: string
+  status: string
+  subHeading: string
+  title: string
+  file?: File | null
+  poster: string
+}
+
 type deleteExhibitionParams = {
   ids: string
 }
@@ -73,7 +86,6 @@ const postExhibition = async (params: postExhibitionParams) => {
   const requestCreateExhibition = {
     title: title,
     subHeading: subHeading,
-    // productIds: JSON.stringify(productIds),
     productIds: products,
     location: location,
     startDate: startDate,
@@ -88,12 +100,56 @@ const postExhibition = async (params: postExhibitionParams) => {
     'requestCreateExhibition',
   )
 
-  console.log(...formData)
-
   try {
     const res = await customAxios.post(`/exhibitions`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
+      },
+    })
+    console.log(res)
+    return res.data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const putExhibition = async (params: putExhibitionParams) => {
+  const { exhibitionId, title, subHeading, location, products, startDate, endDate, status, file, poster } = params
+
+  const formData = new FormData()
+  const requestUpdateExhibition = {
+    title: title,
+    subHeading: subHeading,
+    productIds: products,
+    location: location,
+    startDate: startDate,
+    endDate: endDate,
+    status:
+      status === '전시 예정' || status === 'prev'
+        ? 'prev'
+        : status === '전시중' || status === 'current'
+          ? 'current'
+          : status === '전시 종료' || status === 'end'
+            ? 'end'
+            : '',
+
+    oldPoster: poster,
+  }
+
+  file && formData.append('poster', file as Blob, file?.name)
+  formData.append(
+    'requestUpdateExhibition',
+    new Blob([JSON.stringify(requestUpdateExhibition)], { type: 'application/json' }),
+    'requestUpdateExhibition',
+  )
+
+  try {
+    const res = await customAxios.put(`/exhibitions/${exhibitionId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      params: {
+        exhibitionId: exhibitionId,
       },
     })
     console.log(res)
@@ -135,4 +191,11 @@ const patchChangeDisplayStatus = async (params: patchChangeDisplayStatusParams) 
   }
 }
 
-export { getExhibitionList, getExhibitionDetail, postExhibition, patchChangeDisplayStatus, deleteExhibition }
+export {
+  getExhibitionList,
+  getExhibitionDetail,
+  postExhibition,
+  putExhibition,
+  patchChangeDisplayStatus,
+  deleteExhibition,
+}

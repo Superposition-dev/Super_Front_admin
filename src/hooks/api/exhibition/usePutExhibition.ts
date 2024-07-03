@@ -1,7 +1,8 @@
 import { UseQueryOptions, useMutation } from 'react-query'
-import { postExhibition } from './exhibition'
+import { putExhibition } from './exhibition'
 
-interface postExhibitionParams {
+interface putExhibitionParams {
+  exhibitionId: number
   endDate: string
   location: string
   products: number[]
@@ -9,38 +10,40 @@ interface postExhibitionParams {
   status: string
   subHeading: string
   title: string
-  file: File | null
-  poster?: string
+  poster: string
+  file?: File | null
 }
 
-interface usePostExhibitonParams extends UseQueryOptions<any, any> {
-  params: postExhibitionParams
+interface usePutExhibitonParams extends UseQueryOptions<any, any> {
+  params: putExhibitionParams
   onSuccess?: (data: any) => void
   onError?: (error: any) => void
 }
 
-const usePostExhibition = ({ params, onSuccess, onError }: usePostExhibitonParams) => {
-  const mutationParams: postExhibitionParams = {
+const usePutExhibition = ({ params, onSuccess, onError }: usePutExhibitonParams) => {
+  const mutationParams: putExhibitionParams = {
+    exhibitionId: params.exhibitionId,
     title: params.title,
     subHeading: params.subHeading,
     startDate: params.startDate,
     endDate: params.endDate,
     location: params.location,
     status: params.status,
-    file: params.file,
     products: params.products,
+    file: params.file,
+    poster: params.poster,
   }
   const mutation = useMutation({
-    mutationFn: () => postExhibition(mutationParams),
+    mutationFn: () => putExhibition(mutationParams),
     onSuccess,
     onError,
   })
 
   return {
-    onPostExhibition: () => {
+    onPutExhibition: () => {
       mutation.mutate()
     },
   }
 }
 
-export default usePostExhibition
+export default usePutExhibition
