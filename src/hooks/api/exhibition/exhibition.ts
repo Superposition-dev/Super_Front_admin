@@ -15,12 +15,13 @@ type getExhibitionDetailParams = {
 type postExhibitionParams = {
   endDate: string
   location: string
-  productIds: number[]
+  products: number[]
   startDate: string
   status: string
   subHeading: string
   title: string
   file: File | null
+  poster?: string
 }
 
 type deleteExhibitionParams = {
@@ -66,24 +67,28 @@ const getExhibitionDetail = async (params: getExhibitionDetailParams) => {
 }
 
 const postExhibition = async (params: postExhibitionParams) => {
-  const { title, subHeading, location, productIds, startDate, endDate, status, file } = params
+  const { title, subHeading, location, products, startDate, endDate, status, file } = params
 
   const formData = new FormData()
   const requestCreateExhibition = {
     title: title,
     subHeading: subHeading,
-    productIds: JSON.stringify(productIds),
-    // productIds: JSON.stringify([1]),
+    // productIds: JSON.stringify(productIds),
+    productIds: products,
     location: location,
     startDate: startDate,
     endDate: endDate,
     status: status,
   }
-  formData.append('poster', (file as Blob) ?? '')
+
+  formData.append('poster', file as Blob, file?.name)
   formData.append(
     'requestCreateExhibition',
     new Blob([JSON.stringify(requestCreateExhibition)], { type: 'application/json' }),
+    'requestCreateExhibition',
   )
+
+  console.log(...formData)
 
   try {
     const res = await customAxios.post(`/exhibitions`, formData, {
