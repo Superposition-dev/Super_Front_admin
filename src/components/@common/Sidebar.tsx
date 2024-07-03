@@ -8,8 +8,9 @@ import { PiFolderSimpleUser } from 'react-icons/pi'
 import { TbLogout } from 'react-icons/tb'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import cn from '../../lib/tailwindUtil'
-import Modal from './ModalBox'
+import Modal from './modal/ModalBox'
 import { BsTrash } from 'react-icons/bs'
+import ModalPortal from './modal/ModalPortal'
 
 const Sidebar = () => {
   const [pathname, setPathname] = useState<string>('')
@@ -73,9 +74,11 @@ const Sidebar = () => {
           </div>
         </div>
         {isModal && (
-          <Modal setState={setIsModal} value={{ yes: '로그아웃' }} handler={handleLogout}>
-            <p>로그아웃 하시겠습니까?</p>
-          </Modal>
+          <ModalPortal>
+            <Modal setState={setIsModal} value={{ yes: '로그아웃' }} handler={handleLogout}>
+              <p>로그아웃 하시겠습니까?</p>
+            </Modal>
+          </ModalPortal>
         )}
       </div>
     )

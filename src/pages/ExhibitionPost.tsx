@@ -10,11 +10,12 @@ import Title from '../components/@common/atom/Title'
 import { customDefaultImg } from '../utils/util'
 import RadioInput from '../components/@common/row/RadioInput'
 import ImageInput from '../components/@common/row/ImageInput'
-import Modal from '../components/@common/ModalBox'
+import Modal from '../components/@common/modal/ModalBox'
 import { IoSearch } from 'react-icons/io5'
 import ExhibitonProduct from '../components/exhibition/ExhibitionProduct'
 import usePostExhibition from '../hooks/api/exhibition/usePostExhibition'
 import useProductList from '../hooks/api/product/useProductList'
+import ModalPortal from '../components/@common/modal/ModalPortal'
 
 export interface ProductProps {
   index: number
@@ -260,7 +261,7 @@ const ExhibitionPostPage = () => {
                 name="statue"
                 title="전시 상태"
                 value={exhibitionInfo?.status}
-                values={['prev', 'current', 'done']}
+                values={['prev', 'current', 'end']}
                 onChange={(e) => {
                   setExhibitionInfo((prev) => {
                     if (!prev) {
@@ -350,13 +351,15 @@ const ExhibitionPostPage = () => {
         </div>
       </div>
       {confirm && (
-        <Modal
-          setState={setConfirm}
-          value={{ yes: '등록', no: '취소' }}
-          handler={() => exhibitionInfo && onPostExhibition()}
-        >
-          <p>전시를 등록하시겠어요?</p>
-        </Modal>
+        <ModalPortal>
+          <Modal
+            setState={setConfirm}
+            value={{ yes: '등록', no: '취소' }}
+            handler={() => exhibitionInfo && onPostExhibition()}
+          >
+            <p>전시를 등록하시겠어요?</p>
+          </Modal>
+        </ModalPortal>
       )}
     </Wrapper>
   )

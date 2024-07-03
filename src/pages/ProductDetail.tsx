@@ -9,8 +9,6 @@ import { useNavigate } from 'react-router-dom'
 import cn from '../lib/tailwindUtil'
 import Title from '../components/@common/atom/Title'
 import { customDefaultImg } from '../utils/util'
-import RadioInput from '../components/@common/row/RadioInput'
-import Modal from '../components/@common/ModalBox'
 import ImageInput from '../components/@common/row/ImageInput'
 import Textarea from '../components/@common/row/Textarea'
 
@@ -135,43 +133,56 @@ const ProductDetailPage = () => {
                 <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
-                </div><div className="flex gap-20 w-full h-12 p-3">
+                </div>
+                <div className="flex gap-20 w-full h-12 p-3">
                   <p className="w-[32%] text-center">스프프프</p>
                   <p className="w-[32%] text-center ellipsis">super@naver.com</p>
                 </div>

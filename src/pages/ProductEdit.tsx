@@ -9,8 +9,6 @@ import { useNavigate } from 'react-router-dom'
 import cn from '../lib/tailwindUtil'
 import Title from '../components/@common/atom/Title'
 import { customDefaultImg } from '../utils/util'
-import RadioInput from '../components/@common/row/RadioInput'
-import Modal from '../components/@common/ModalBox'
 import ImageInput from '../components/@common/row/ImageInput'
 import Textarea from '../components/@common/row/Textarea'
 
@@ -102,7 +100,12 @@ const ProductEdit = () => {
               <Input type="text" title="가격" />
             </Row>
             <div className="justify-self-end flex items-center justify-center gap-4 w-full mt-auto">
-              <Button addClass="w-[100px] min-w-[120px]" name={'취소'} customType={type.white} onClick={() => navigate('/product')} />
+              <Button
+                addClass="w-[100px] min-w-[120px]"
+                name={'취소'}
+                customType={type.white}
+                onClick={() => navigate('/product')}
+              />
               <Button
                 addClass="w-[100px] min-w-[120px]"
                 name={'저장'}
