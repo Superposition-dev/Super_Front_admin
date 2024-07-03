@@ -124,7 +124,14 @@ const putExhibition = async (params: putExhibitionParams) => {
     location: location,
     startDate: startDate,
     endDate: endDate,
-    status: status === '전시 예정' ? 'prev' : status === '전시중' ? 'current' : status === '전시 종료' ? 'end' : '',
+    status:
+      status === '전시 예정' || status === 'prev'
+        ? 'prev'
+        : status === '전시중' || status === 'current'
+          ? 'current'
+          : status === '전시 종료' || status === 'end'
+            ? 'end'
+            : '',
 
     oldPoster: poster,
   }
