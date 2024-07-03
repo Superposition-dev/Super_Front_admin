@@ -28,7 +28,7 @@ const ExhibitonProduct = memo(({ item, index, selectedProduct, isSelected }: Exh
     >
       {isSelected && (
         <>
-          <div className="absolute top-0 left-0 w-full h-full block bg-black bg-opacity-50 z-10 border-[5px] border-main-bright z-9"></div>
+          <div className="absolute top-0 left-0 w-full h-full block bg-black bg-opacity-50 z-10 border-[5px] border-main-bright"></div>
           <div className="absolute right-3 top-3 w-6 h-6 rounded-full bg-white z-10" />
           <FaCheckCircle className="absolute right-2.5 top-2.5 w-7 h-7 text-main-bright z-10" />
         </>

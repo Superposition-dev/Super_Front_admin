@@ -17,9 +17,11 @@ import ImageInput from '../components/@common/row/ImageInput'
 import { IoSearch } from 'react-icons/io5'
 import useExhibitionDetail from '../hooks/api/exhibition/useExhibitionDetail'
 import ExhibitonProduct from '../components/exhibition/ExhibitionProduct'
+import usePutExhibition from '../hooks/api/exhibition/usePutExhibition'
+import useDeleteExhibition from '../hooks/api/exhibition/useDeleteExhibition'
 
 export interface ExhibitionInfoType {
-  exhibitionId?: number
+  exhibitionId: number
   title: string
   subHeading: string
   startDate: string
@@ -27,7 +29,7 @@ export interface ExhibitionInfoType {
   location: string
   status: string
   poster: string
-  products: ProductInfoType[]
+  products?: ProductInfoType[]
   file: File | null
 }
 
@@ -42,10 +44,30 @@ export interface ProductInfoType {
 }
 
 const ExhibitionDetailPage = () => {
-  const [originInfo, setOriginInfo] = useState<ExhibitionInfoType>()
-  const [exhibitionInfo, setExhibitionInfo] = useState<ExhibitionInfoType>()
+  const [originInfo, setOriginInfo] = useState<ExhibitionInfoType>({
+    exhibitionId: 0,
+    title: '',
+    subHeading: '',
+    startDate: '',
+    endDate: '',
+    location: '',
+    status: '',
+    poster: '',
+    file: null,
+  })
+  const [exhibitionInfo, setExhibitionInfo] = useState<ExhibitionInfoType>({
+    exhibitionId: 0,
+    title: '',
+    subHeading: '',
+    startDate: '',
+    endDate: '',
+    location: '',
+    status: '',
+    poster: '',
+    file: null,
+  })
   const [productList, setProductList] = useState<ProductInfoType[]>()
-  const [selectedProductList, setSelectedProductList] = useState<ProductInfoType[]>([])
+  const [selectedProductList, setSelectedProductList] = useState<number[]>([])
   const [edit, setEdit] = useState<boolean>(false)
   const [file, setFile] = useState<File | null>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
@@ -76,22 +98,22 @@ const ExhibitionDetailPage = () => {
     { label: '구매신청 수', key: 'orderCount' },
   ]
 
+  const selectedProduct = (item: ProductInfoType) => {
+    const findIdx = selectedProductList.findIndex((ele) => ele === item.productId)
+    if (findIdx === -1) {
+      setSelectedProductList([...selectedProductList, item.productId])
+    } else {
+      const deleteSelected = selectedProductList.filter((el, index) => index !== findIdx)
+      setSelectedProductList(deleteSelected)
+    }
+  }
+
   const searchedProduct = (value: string) => {
     if (value === '') {
       setProductList(originInfo?.products)
     } else {
       const result = productList?.filter((item) => String(item.productId) === value || item.title.includes(value))
       setProductList(result)
-    }
-  }
-
-  const selectedProduct = (item: ProductInfoType) => {
-    const findIdx = selectedProductList.findIndex((ele) => ele.productId === item.productId)
-    if (findIdx === -1) {
-      setSelectedProductList([...selectedProductList, item])
-    } else {
-      const deleteSelected = selectedProductList.filter((el, index) => index !== findIdx)
-      setSelectedProductList(deleteSelected)
     }
   }
 
@@ -103,6 +125,34 @@ const ExhibitionDetailPage = () => {
       setOriginInfo(data)
       setExhibitionInfo(data)
       setProductList(data.products)
+
+      const productList = data.products.map((item: ProductInfoType) => {
+        return item.productId
+      })
+
+      setSelectedProductList(productList)
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
+  const { onPutExhibition } = usePutExhibition({
+    params: { ...exhibitionInfo, products: selectedProductList },
+    onSuccess: (res) => {
+      console.log('전시 수정 완료')
+      console.log(res)
+      getExhibitionDetail()
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
+  const { onDeleteExhibiton } = useDeleteExhibition({
+    onSuccess: (res) => {
+      console.log(res)
+      navigate('/exhibition')
     },
     onError: (error) => {
       console.log(error)
@@ -116,7 +166,7 @@ const ExhibitionDetailPage = () => {
         item={item}
         index={index}
         selectedProduct={selectedProduct}
-        isSelected={selectedProductList.some((selectedItem) => selectedItem.productId === item.productId)}
+        isSelected={selectedProductList.includes(item.productId)}
       />
     ))
   }, [productList, selectedProductList, selectedProduct])
@@ -227,15 +277,23 @@ const ExhibitionDetailPage = () => {
                 type="radio"
                 name="statue"
                 title="전시 상태"
-                value={exhibitionInfo?.status}
-                values={['전시 예정', '전시중', '전시 종료']}
+                value={
+                  exhibitionInfo?.status === '전시 예정' || exhibitionInfo?.status === 'prev'
+                    ? 'prev'
+                    : exhibitionInfo?.status === '전시중' || exhibitionInfo?.status === 'current'
+                      ? 'current'
+                      : exhibitionInfo?.status === '전시 종료' || exhibitionInfo?.status === 'end'
+                        ? 'end'
+                        : ''
+                }
+                values={['prev', 'current', 'end']}
                 disabled={edit ? false : true}
                 onChange={(e) => {
                   setExhibitionInfo((prev) => {
                     if (!prev) {
                       return prev
                     }
-                    return { ...prev, status: e.target.value as 'prev' | 'current' | 'done' }
+                    return { ...prev, status: e.target.value }
                   })
                 }}
               />
@@ -282,7 +340,7 @@ const ExhibitionDetailPage = () => {
               <div className="flex flex-col gap-2 w-full">
                 <div className="flex items-center gap-3 pt-4">
                   <h2 className="text-xl font-semibold">작품</h2>
-                  <span className="text-sm">전체 {exhibitionInfo?.products.length}건</span>
+                  <span className="text-sm">전체 {exhibitionInfo?.products?.length}건</span>
                   <Button
                     addClass="h-8 py-0.5 px-2 text-sm ml-auto rounded-md"
                     name="데이터 다운로드"
@@ -295,7 +353,7 @@ const ExhibitionDetailPage = () => {
                 </div>
                 <div className="relative w-full 2xl:h-[470px] h-[410px] overflow-auto pt-0 rounded-lg bg-gray-50 border border-gray-200">
                   <Table thead={THeadData} index={false} theadClass="h-11">
-                    {exhibitionInfo?.products.map((item, index) => {
+                    {exhibitionInfo?.products?.map((item, index) => {
                       return (
                         <Tr key={index} addClass="h-10 cursor-default">
                           <Td value={item.productId} />
@@ -318,7 +376,12 @@ const ExhibitionDetailPage = () => {
                 name={edit ? '취소' : '목록'}
                 customType={type.white}
                 onClick={() => {
-                  edit ? setEdit(false) : navigate('/exhibition')
+                  if (edit) {
+                    setEdit(false)
+                    setExhibitionInfo(originInfo)
+                  } else {
+                    navigate('/exhibition')
+                  }
                 }}
               />
               <Button
@@ -327,6 +390,7 @@ const ExhibitionDetailPage = () => {
                 customType={type.fill}
                 onClick={() => {
                   if (edit) {
+                    onPutExhibition()
                     console.log('저장 버튼 클릭')
                   } else {
                     console.log('수정 버튼 클릭')
@@ -340,10 +404,11 @@ const ExhibitionDetailPage = () => {
                 customType={type.empty}
                 onClick={() => {
                   console.log('삭제 버튼 클릭')
+                  onDeleteExhibiton(String(exhibitionInfo?.exhibitionId))
                 }}
               />
               <CSVLink
-                data={exhibitionInfo ? exhibitionInfo?.products : ''}
+                data={exhibitionInfo && exhibitionInfo?.products ? exhibitionInfo?.products : ''}
                 headers={header}
                 filename={`${dateFormat(today)}.csv`}
                 className="hidden"

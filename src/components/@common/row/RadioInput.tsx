@@ -32,7 +32,7 @@ const RadioInput = ({ title, values, constant, onChange, disabled, ...props }: I
               onChange={onChange}
               disabled={disabled}
             />
-            <span>{data === 'prev' ? '전시 예정' : data === 'current' ? '전시 중' : 'done' ? '전시 종료' : ''}</span>
+            <span>{data === 'prev' ? '전시 예정' : data === 'current' ? '전시중' : 'end' ? '전시 종료' : ''}</span>
           </label>
         ))}
       </div>
