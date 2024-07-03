@@ -12,6 +12,8 @@ import Toggle from '../components/@common/atom/Toggle'
 import useExhibitionList from '../hooks/api/exhibition/useExhibitionList'
 import useChangeDisplayStatus from '../hooks/api/exhibition/useChangeDisplayStatus'
 import useDeleteExhibition from '../hooks/api/exhibition/useDeleteExhibition'
+import ModalPortal from '../components/@common/modal/ModalPortal'
+import Modal from '../components/@common/modal/ModalBox'
 
 export interface ExhibitionType {
   select: false
@@ -37,6 +39,9 @@ const ExhibitionPage = () => {
   const [page, setPage] = useState<number>(1)
   const [totalCount, setTotalCount] = useState<number>(0)
   const [totalPages, setTotalPages] = useState<number>(0)
+  const [isShow, setIsShow] = useState<boolean>(false)
+  const [message, setMessage] = useState<string>('')
+  const [modalType, setModalType] = useState<string>('')
   const selectRefs = useRef<any[]>([])
   const toggleRefs = useRef<any[]>([])
   const navigate = useNavigate()
@@ -311,13 +316,9 @@ const ExhibitionPage = () => {
                   customType={type.empty}
                   addClass="px-3 py-1.5 text-sm"
                   onClick={() => {
-                    onDeleteExhibiton(
-                      selectedList
-                        .map((item) => {
-                          return item.exhibitionId
-                        })
-                        .join(','),
-                    )
+                    setIsShow(true)
+                    setMessage('선택한 전시를 삭제하시겠어요?')
+                    setModalType('delete')
                   }}
                 />
               </div>
@@ -326,6 +327,27 @@ const ExhibitionPage = () => {
           </section>
         </div>
       </div>
+      <ModalPortal>
+        {isShow && (
+          <Modal
+            setState={setIsShow}
+            value={{ yes: modalType === 'delete' ? '삭제' : '', no: '취소' }}
+            handler={() => {
+              modalType === 'delete'
+                ? onDeleteExhibiton(
+                    selectedList
+                      .map((item) => {
+                        return item.exhibitionId
+                      })
+                      .join(','),
+                  )
+                : ''
+            }}
+          >
+            <p>{message}</p>
+          </Modal>
+        )}
+      </ModalPortal>
     </Wrapper>
   )
 }

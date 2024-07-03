@@ -19,6 +19,8 @@ import useExhibitionDetail from '../hooks/api/exhibition/useExhibitionDetail'
 import ExhibitonProduct from '../components/exhibition/ExhibitionProduct'
 import usePutExhibition from '../hooks/api/exhibition/usePutExhibition'
 import useDeleteExhibition from '../hooks/api/exhibition/useDeleteExhibition'
+import ModalPortal from '../components/@common/modal/ModalPortal'
+import Modal from '../components/@common/modal/ModalBox'
 
 export interface ExhibitionInfoType {
   exhibitionId: number
@@ -72,6 +74,9 @@ const ExhibitionDetailPage = () => {
   const [file, setFile] = useState<File | null>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [height, setHeight] = useState<number>()
+  const [isShow, setIsShow] = useState<boolean>(false)
+  const [message, setMessage] = useState<string>('')
+  const [modalType, setModalType] = useState<string>('')
   const navigate = useNavigate()
   const location = useLocation()
   const today = new Date()
@@ -143,6 +148,7 @@ const ExhibitionDetailPage = () => {
       console.log('전시 수정 완료')
       console.log(res)
       getExhibitionDetail()
+      setEdit(false)
     },
     onError: (error) => {
       console.log(error)
@@ -178,6 +184,8 @@ const ExhibitionDetailPage = () => {
   useEffect(() => {
     setHeight(wrapRef?.current?.clientHeight)
   }, [wrapRef?.current])
+
+  console.log({ ...exhibitionInfo, products: selectedProductList })
 
   return (
     <Wrapper title="전시 상세 정보">
@@ -390,12 +398,14 @@ const ExhibitionDetailPage = () => {
                 customType={type.fill}
                 onClick={() => {
                   if (edit) {
-                    onPutExhibition()
+                    setIsShow(true)
+                    setMessage('수정된 내용을 저장하시겠어요?')
+                    setModalType('edit')
                     console.log('저장 버튼 클릭')
                   } else {
                     console.log('수정 버튼 클릭')
+                    setEdit(true)
                   }
-                  setEdit(!edit)
                 }}
               />
               <Button
@@ -404,7 +414,9 @@ const ExhibitionDetailPage = () => {
                 customType={type.empty}
                 onClick={() => {
                   console.log('삭제 버튼 클릭')
-                  onDeleteExhibiton(String(exhibitionInfo?.exhibitionId))
+                  setIsShow(true)
+                  setMessage('전시를 삭제하시겠어요?')
+                  setModalType('delete')
                 }}
               />
               <CSVLink
@@ -445,6 +457,23 @@ const ExhibitionDetailPage = () => {
           </div>
         </div>
       </div>
+      <ModalPortal>
+        {isShow && (
+          <Modal
+            setState={setIsShow}
+            value={{ yes: modalType === 'delete' ? '삭제' : modalType === 'edit' ? '저장' : '', no: '취소' }}
+            handler={() => {
+              modalType === 'delete'
+                ? onDeleteExhibiton(String(exhibitionInfo.exhibitionId))
+                : modalType === 'edit'
+                  ? onPutExhibition()
+                  : ''
+            }}
+          >
+            <p>{message}</p>
+          </Modal>
+        )}
+      </ModalPortal>
     </Wrapper>
   )
 }

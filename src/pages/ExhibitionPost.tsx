@@ -318,7 +318,7 @@ const ExhibitionPostPage = () => {
                   navigate('/exhibition')
                 }}
               />
-              <Button addClass="w-[100px]" name="저장" customType={type.fill} onClick={() => setConfirm(true)} />
+              <Button addClass="w-[100px]" name="등록" customType={type.fill} onClick={() => setConfirm(true)} />
             </div>
           </Rows>
           <div
