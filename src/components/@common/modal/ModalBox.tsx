@@ -19,7 +19,7 @@ const Modal = ({ children, value, setState, handler, addClass }: ModalProps) => 
   }
 
   return (
-    <div className="fixed w-full h-full flex justify-center items-center left-0 top-0">
+    <div className="fixed w-full h-full flex justify-center items-center left-0 top-0 z-20">
       <div onClick={() => setState(false)} className="fixed w-full h-full bg-black opacity-20 -z-10"></div>
       <div className={cn('w-[420px] bg-white text-center rounded-md overflow-hidden', addClass)}>
         <div className="text-lg min-h-[180px] py-4 flex flex-col items-center justify-center">{children}</div>
