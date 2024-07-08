@@ -13,6 +13,15 @@ type getAuthorDetailParams = {
   id: string
 }
 
+type postAuthorParams = {
+  id: string
+  message: string
+  introduce: string
+  name: string
+  image: File | undefined
+  collaborationDate: Date
+}
+
 type deleteAuthorParams = {
   id: string
 }
@@ -50,6 +59,30 @@ const getAuthorDetail = async (params: getAuthorDetailParams) => {
   }
 }
 
+const postAuthor = async (params: postAuthorParams) => {
+  const { id, message, introduce, name, collaborationDate, image } = params
+
+  const formData = new FormData()
+  formData.append('image', image as Blob, image?.name)
+  formData.append('id', id as unknown as Blob)
+  formData.append('message', message as unknown as Blob)
+  formData.append('introduce', introduce as unknown as Blob)
+  formData.append('name', name as unknown as Blob)
+  formData.append('collaborationDate', collaborationDate.toISOString() as unknown as Blob)
+
+  try {
+    const res = await customAxios.post(`/artists`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    console.log(res)
+    return res.data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 const deleteAuthor = async (params: deleteAuthorParams) => {
   const { id } = params
   try {
@@ -64,4 +97,4 @@ const deleteAuthor = async (params: deleteAuthorParams) => {
   }
 }
 
-export { getAuthorList, getAuthorDetail, deleteAuthor }
+export { getAuthorList, getAuthorDetail, postAuthor, deleteAuthor }

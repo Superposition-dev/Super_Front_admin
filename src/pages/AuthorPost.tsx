@@ -10,6 +10,7 @@ import Title from '../components/@common/atom/Title'
 import { customDefaultImg, dateFormat } from '../utils/util'
 import cn from '../lib/tailwindUtil'
 import ImageInput from '../components/@common/row/ImageInput'
+import usePostAuthor from '../hooks/api/author/usePostAuthor'
 
 export interface AuthorInfoType {
   id: string
@@ -17,7 +18,7 @@ export interface AuthorInfoType {
   introduce: string
   message: string
   userAccount?: string
-  image: string
+  image: File | undefined
   collaborationDate: Date
 }
 
@@ -28,7 +29,7 @@ const AuthorPostPage = () => {
     introduce: '',
     message: '',
     userAccount: '',
-    image: '',
+    image: undefined,
     collaborationDate: new Date(),
   })
   const [registed, setRegisted] = useState<boolean>()
@@ -39,9 +40,30 @@ const AuthorPostPage = () => {
   const wrapRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
 
+  const { onPostAuthor } = usePostAuthor({
+    params: authorInfo,
+    onSuccess: (res) => {
+      console.log(res)
+      console.log('작가 등록 완료')
+      navigate('/author')
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
   useEffect(() => {
     setHeight(wrapRef?.current?.clientHeight)
   }, [wrapRef?.current])
+
+  useEffect(() => {
+    setAuthorInfo((prev) => {
+      if (!prev) {
+        return prev
+      }
+      return { ...prev, image: file as File }
+    })
+  }, [file])
 
   console.log(authorInfo)
 
@@ -176,6 +198,7 @@ const AuthorPostPage = () => {
                 customType={type.fill}
                 onClick={() => {
                   console.log('등록 버튼 클릭')
+                  onPostAuthor()
                   navigate('/author')
                 }}
               />
@@ -196,7 +219,7 @@ const AuthorPostPage = () => {
                     'object-contain',
                     previewImage ? 'w-full h-full' : authorInfo.image ? 'w-full h-full' : 'w-40 h-40',
                   )}
-                  src={customDefaultImg(previewImage ? previewImage : authorInfo ? authorInfo?.image : '')}
+                  src={customDefaultImg(previewImage ? previewImage : '')}
                 />
                 <ImageInput setFile={setFile} setPreviewImg={setPreviewImage} imageRef={imageRef} />
               </div>

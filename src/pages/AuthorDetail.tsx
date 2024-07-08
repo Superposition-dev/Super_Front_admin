@@ -272,7 +272,7 @@ const AuthorDetailPage = () => {
                   } else {
                     console.log('수정 버튼 클릭')
                   }
-                  edit && setEdit(!edit)
+                  setEdit(!edit)
                 }}
               />
             </div>
