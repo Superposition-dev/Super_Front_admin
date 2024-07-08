@@ -128,8 +128,6 @@ const ExhibitionPostPage = () => {
   })
 
   const { refetch: getProductList } = useProductList({
-    page: 1,
-    size: 8,
     enabled: false,
     onSuccess: (data) => {
       setProductList(data.data)
@@ -283,7 +281,7 @@ const ExhibitionPostPage = () => {
                 <p>
                   <span className="text-sm">선택한 작품 {selectedProductList.length}</span>
                   <span className="text-sm">{' / '}</span>
-                  <span className="text-sm">전체 {productList?.length}</span>
+                  <span className="text-sm">전체 {originProductList?.length}</span>
                 </p>
                 <div className="flex items-center gap-3 ml-auto w-[30%] h-8 px-3 border rounded-md text-sm overflow-hidden">
                   <IoSearch className="w-5 h-5 text-gray-500" />

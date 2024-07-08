@@ -21,6 +21,7 @@ import usePutExhibition from '../hooks/api/exhibition/usePutExhibition'
 import useDeleteExhibition from '../hooks/api/exhibition/useDeleteExhibition'
 import ModalPortal from '../components/@common/modal/ModalPortal'
 import Modal from '../components/@common/modal/ModalBox'
+import useProductList from '../hooks/api/product/useProductList'
 
 export interface ExhibitionInfoType {
   exhibitionId: number
@@ -70,6 +71,7 @@ const ExhibitionDetailPage = () => {
   })
   const [productList, setProductList] = useState<ProductInfoType[]>()
   const [selectedProductList, setSelectedProductList] = useState<number[]>([])
+  const [originList, setOriginList] = useState<ProductInfoType[]>([])
   const [edit, setEdit] = useState<boolean>(false)
   const [file, setFile] = useState<File | null>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
@@ -115,7 +117,7 @@ const ExhibitionDetailPage = () => {
 
   const searchedProduct = (value: string) => {
     if (value === '') {
-      setProductList(originInfo?.products)
+      setProductListCustom(originList)
     } else {
       const result = productList?.filter((item) => String(item.productId) === value || item.title.includes(value))
       setProductList(result)
@@ -165,6 +167,29 @@ const ExhibitionDetailPage = () => {
     },
   })
 
+  const { refetch: getProductList } = useProductList({
+    enabled: false,
+    onSuccess: (data) => {
+      setOriginList(data.data)
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
+  const setProductListCustom = (targetList: ProductInfoType[]) => {
+    const sortedProductList = targetList?.sort((a, b) => {
+      const aIncluded = selectedProductList.includes(a.productId)
+      const bIncluded = selectedProductList.includes(b.productId)
+
+      if (aIncluded && !bIncluded) return -1
+      if (!aIncluded && bIncluded) return 1
+      return 0
+    })
+
+    setProductList(sortedProductList)
+  }
+
   const memoizedProducts = useMemo(() => {
     return productList?.map((item, index) => (
       <ExhibitonProduct
@@ -179,13 +204,12 @@ const ExhibitionDetailPage = () => {
 
   useEffect(() => {
     getExhibitionDetail()
+    getProductList()
   }, [path])
 
   useEffect(() => {
     setHeight(wrapRef?.current?.clientHeight)
   }, [wrapRef?.current])
-
-  console.log({ ...exhibitionInfo, products: selectedProductList })
 
   return (
     <Wrapper title="전시 상세 정보">
@@ -313,7 +337,7 @@ const ExhibitionDetailPage = () => {
                   <p>
                     <span className="text-sm">선택한 작품 {selectedProductList.length}</span>
                     <span className="text-sm">{' / '}</span>
-                    <span className="text-sm">전체 {productList?.length}</span>
+                    <span className="text-sm">전체 {originList?.length}</span>
                   </p>
                   <div className="flex items-center gap-3 ml-auto w-[30%] h-8 px-3 border rounded-md text-sm overflow-hidden">
                     <IoSearch className="w-5 h-5 text-gray-500" />
@@ -405,6 +429,7 @@ const ExhibitionDetailPage = () => {
                   } else {
                     console.log('수정 버튼 클릭')
                     setEdit(true)
+                    setProductListCustom(originList)
                   }
                 }}
               />

@@ -70,8 +70,6 @@ const AuthorDetailPage = () => {
   const { refetch: getProductList } = useProductList({
     limit: 'artist',
     text: authorInfo?.name,
-    page: 1,
-    size: 8,
     enabled: false,
     onSuccess: (data) => {
       setProductList(data.data)
