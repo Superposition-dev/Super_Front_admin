@@ -179,6 +179,8 @@ const ExhibitionPage = () => {
     getFiltered()
   }, [isStatus])
 
+  console.log(originList)
+
   return (
     <Wrapper title="전시관리">
       <div className="flex flex-col items-center justify-between gap-7 w-full h-full">
