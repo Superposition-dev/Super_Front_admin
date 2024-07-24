@@ -13,7 +13,7 @@ import useExhibitionList from '../hooks/api/exhibition/useExhibitionList'
 import useChangeDisplayStatus from '../hooks/api/exhibition/useChangeDisplayStatus'
 import useDeleteExhibition from '../hooks/api/exhibition/useDeleteExhibition'
 import ModalPortal from '../components/@common/modal/ModalPortal'
-import Modal from '../components/@common/modal/ModalBox'
+import ConfirmModal from '../components/@common/modal/ConfirmModal'
 
 export interface ExhibitionType {
   select: false
@@ -329,7 +329,7 @@ const ExhibitionPage = () => {
       </div>
       <ModalPortal>
         {isShow && (
-          <Modal
+          <ConfirmModal
             setState={setIsShow}
             value={{ yes: modalType === 'delete' ? '삭제' : '', no: '취소' }}
             handler={() => {
@@ -345,7 +345,7 @@ const ExhibitionPage = () => {
             }}
           >
             <p>{message}</p>
-          </Modal>
+          </ConfirmModal>
         )}
       </ModalPortal>
     </Wrapper>

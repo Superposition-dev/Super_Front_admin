@@ -10,7 +10,7 @@ import cn from '../lib/tailwindUtil'
 import Title from '../components/@common/atom/Title'
 import { customDefaultImg } from '../utils/util'
 import RadioInput from '../components/@common/row/RadioInput'
-import Modal from '../components/@common/modal/ModalBox'
+import ConfirmModal from '../components/@common/modal/ConfirmModal'
 import ImageInput from '../components/@common/row/ImageInput'
 import ModalPortal from '../components/@common/modal/ModalPortal'
 
@@ -172,13 +172,13 @@ const UserDetailPage = () => {
             <div>
               {isModal && (
                 <ModalPortal>
-                  <Modal setState={setIsModal} value={{ yes: '탈퇴' }} handler={() => alert('탈퇴')}>
+                  <ConfirmModal setState={setIsModal} value={{ yes: '탈퇴' }} handler={() => alert('탈퇴')}>
                     <p>
                       선택한 회원을 탈퇴처리 하시겠습니까?
                       <br />
                       탈퇴처리 후에는 복구가 불가능합니다.
                     </p>
-                  </Modal>
+                  </ConfirmModal>
                 </ModalPortal>
               )}
             </div>
