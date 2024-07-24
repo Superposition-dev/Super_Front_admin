@@ -23,7 +23,6 @@ export interface AuthorType {
 }
 
 const AuthorPage = () => {
-  const [originList, setOriginList] = useState<AuthorType[]>([])
   const [searchedList, setSearchedList] = useState<AuthorType[]>([])
   const [selectedList, setSelectedList] = useState<AuthorType[]>([])
   const [startDate, setStartDate] = useState<string>()
@@ -104,13 +103,11 @@ const AuthorPage = () => {
     page: page,
     enabled: false,
     onSuccess: (data) => {
-      setOriginList(data.artists)
       setSearchedList(data.artists)
       setStartDate(undefined)
       setEndDate(undefined)
       setText(undefined)
       setLimit('all')
-      setTotalCount(data.artists.length)
       // setTotalCount(data.totalCount)
       // setPage(data.pageIndex)
       // setTotalPages(data.totalPage)
@@ -131,9 +128,7 @@ const AuthorPage = () => {
     page,
     enabled: false,
     onSuccess: (data) => {
-      setOriginList(data.artists)
       setSearchedList(data.artists)
-      setTotalCount(data.artists.length)
       // setTotalCount(data.totalCount)
       // setPage(data.pageIndex)
       // setTotalPages(data.totalPage)
@@ -157,8 +152,6 @@ const AuthorPage = () => {
   useEffect(() => {
     getAuthorList()
   }, [])
-
-  console.log(originList)
 
   return (
     <Wrapper title="작가관리">
@@ -188,64 +181,37 @@ const AuthorPage = () => {
             />
             <div className="flex flex-col items-center justify-between gap-2 w-full h-[83%] border-y border-default border-opacity-5">
               <Table thead={THeadData} tbody={TBodyData} index={false} addClass="h-[91%] relative">
-                {(searchedList.length === 0 || originList.length === 0) && (
+                {searchedList.length === 0 && (
                   <div className="absolute flex items-center justify-center w-full h-full bg-gray-50">
                     작가 목록이 존재하지 않아요.
                   </div>
                 )}
-                {searchedList !== originList
-                  ? searchedList?.map((item, index) => {
-                      return (
-                        <Tr
-                          key={index}
-                          onClick={(e) => {
-                            navigated(e, item, index)
-                          }}
-                        >
-                          <Td
-                            type="checkbox"
-                            id={String(item.instagramId)}
-                            defaultChecked={item.select}
-                            onChange={() => selectedItem(item)}
-                            selectRef={(element: any) => (selectRefs.current[index] = element)}
-                          />
-                          <Td value={index + 1} />
-                          <Td value={item.name} />
-                          <Td value={item.instagramId} />
-                          <Td
-                            value={item.user ? 'Y' : 'N'}
-                            addClass={item.user ? 'text-main-medium font-bold' : 'text-default text-opacity-30'}
-                          />
-                          <Td value={dateFormat(new Date(item.collaborationDate))} />
-                        </Tr>
-                      )
-                    })
-                  : originList?.map((item, index) => {
-                      return (
-                        <Tr
-                          key={index}
-                          onClick={(e) => {
-                            navigated(e, item, index)
-                          }}
-                        >
-                          <Td
-                            type="checkbox"
-                            id={String(item.instagramId)}
-                            defaultChecked={item.select}
-                            onChange={() => selectedItem(item)}
-                            selectRef={(element: any) => (selectRefs.current[index] = element)}
-                          />
-                          <Td value={index + 1} />
-                          <Td value={item.name} />
-                          <Td value={item.instagramId} />
-                          <Td
-                            value={item.user ? 'Y' : 'N'}
-                            addClass={item.user ? 'text-main-medium font-bold' : 'text-default text-opacity-30'}
-                          />
-                          <Td value={dateFormat(new Date(item.collaborationDate))} />
-                        </Tr>
-                      )
-                    })}
+                {searchedList?.map((item, index) => {
+                  return (
+                    <Tr
+                      key={index}
+                      onClick={(e) => {
+                        navigated(e, item, index)
+                      }}
+                    >
+                      <Td
+                        type="checkbox"
+                        id={String(item.instagramId)}
+                        defaultChecked={item.select}
+                        onChange={() => selectedItem(item)}
+                        selectRef={(element: any) => (selectRefs.current[index] = element)}
+                      />
+                      <Td value={index + 1} />
+                      <Td value={item.name} />
+                      <Td value={item.instagramId} />
+                      <Td
+                        value={item.user ? 'Y' : 'N'}
+                        addClass={item.user ? 'text-main-medium font-bold' : 'text-default text-opacity-30'}
+                      />
+                      <Td value={dateFormat(new Date(item.collaborationDate))} />
+                    </Tr>
+                  )
+                })}
               </Table>
               <div className="flex gap-3 self-end pb-4">
                 <Button
@@ -257,12 +223,6 @@ const AuthorPage = () => {
                     setMessage('선택한 작가를 삭제하시겠어요?')
                   }}
                 />
-                {/* <Button
-                  name="전체 삭제"
-                  customType={type.empty}
-                  addClass="px-3 py-1.5 text-sm"
-                  onClick={() => console.log('전체 삭제 버튼 클릭')}
-                /> */}
               </div>
             </div>
             <Pagination page={page} totalPages={totalPages} itemsPerPage={10} totalItems={totalCount} />
