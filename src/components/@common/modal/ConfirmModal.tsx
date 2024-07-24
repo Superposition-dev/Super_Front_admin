@@ -12,7 +12,7 @@ interface ModalProps {
   addClass?: string
 }
 
-const Modal = ({ children, value, setState, handler, addClass }: ModalProps) => {
+const ConfirmModal = ({ children, value, setState, handler, addClass }: ModalProps) => {
   const handleConfirm = () => {
     handler()
     setState(false)
@@ -26,7 +26,7 @@ const Modal = ({ children, value, setState, handler, addClass }: ModalProps) => 
         <div className="flex flex-row">
           <button
             onClick={() => setState(false)}
-            className="w-[50%] transition duration-200 bg-white hover:opacity-55  py-3 border"
+            className="w-[50%] transition duration-200 bg-white hover:opacity-55 py-3 border"
           >
             {value.no ? value.no : '취소'}
           </button>
@@ -42,4 +42,4 @@ const Modal = ({ children, value, setState, handler, addClass }: ModalProps) => 
   )
 }
 
-export default Modal
+export default ConfirmModal
