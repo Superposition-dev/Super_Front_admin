@@ -10,9 +10,10 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   title: string
   constant?: boolean
   button?: ButtonType
+  addClass?: string
 }
 
-const Input = ({ title, button, constant, ...props }: InputProps) => {
+const Input = ({ title, button, constant, addClass, ...props }: InputProps) => {
   return (
     <div className="flex flex-col gap-2.5 w-full">
       <h4 className="font-semibold">
@@ -24,6 +25,7 @@ const Input = ({ title, button, constant, ...props }: InputProps) => {
           'flex items-center justify-between w-full border border-main-too-dark border-opacity-20 rounded overflow-hidden',
           button && 'pr-1.5',
           !props.disabled ? '' : '',
+          addClass,
         )}
       >
         <input

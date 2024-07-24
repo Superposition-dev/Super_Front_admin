@@ -8,13 +8,13 @@ interface useDeleteAuthorParams extends UseQueryOptions<any, any> {
 
 const useDeleteAuthor = ({ onSuccess, onError }: useDeleteAuthorParams) => {
   const mutation = useMutation({
-    mutationFn: ({ id }: { id: string }) => deleteAuthor({ id }),
+    mutationFn: ({ id }: { id: string[] }) => deleteAuthor({ id }),
     onSuccess,
     onError,
   })
 
   return {
-    onDeleteAuthor: (id: string) => {
+    onDeleteAuthor: (id: string[]) => {
       mutation.mutate({ id })
     },
   }

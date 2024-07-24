@@ -23,7 +23,7 @@ type postAuthorParams = {
 }
 
 type deleteAuthorParams = {
-  id: string
+  id: string[]
 }
 
 const getAuthorList = async (params: getAuthorListParams) => {
@@ -63,7 +63,7 @@ const postAuthor = async (params: postAuthorParams) => {
   const { id, message, introduce, name, collaborationDate, image } = params
 
   const formData = new FormData()
-  formData.append('image', image as Blob, image?.name)
+  formData.append('image', image as Blob)
   formData.append('id', id as unknown as Blob)
   formData.append('message', message as unknown as Blob)
   formData.append('introduce', introduce as unknown as Blob)
@@ -83,12 +83,22 @@ const postAuthor = async (params: postAuthorParams) => {
   }
 }
 
+const putAuthor = async () => {}
+
 const deleteAuthor = async (params: deleteAuthorParams) => {
   const { id } = params
   try {
     const res = await customAxios.delete(`/artists`, {
       params: {
         id: id,
+      },
+      paramsSerializer: function (paramObj) {
+        const params = new URLSearchParams()
+        for (const key in paramObj) {
+          params.append(key, paramObj[key])
+        }
+
+        return params.toString()
       },
     })
     return res.data

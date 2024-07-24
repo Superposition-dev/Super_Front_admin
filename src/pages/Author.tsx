@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Search from '../components/@common/atom/Search'
 import Wrapper from '../components/@common/layout/Wrapper'
 import TInteraction from '../components/@common/table/TInteraction'
-import Table, { TBodyType } from '../components/@common/table/Table'
+import Table from '../components/@common/table/Table'
 import Tr from '../components/@common/table/Tr'
 import Td from '../components/@common/table/Td'
 import Button, { type } from '../components/@common/atom/Button'
@@ -11,10 +11,12 @@ import Pagination from '../components/@common/pagination/Pagination'
 import useAuthorList from '../hooks/api/author/useAuthorList'
 import { dateFormat } from '../utils/util'
 import useDeleteAuthor from '../hooks/api/author/useDeleteAuthor'
+import ModalPortal from '../components/@common/modal/ModalPortal'
+import ConfirmModal from '../components/@common/modal/ConfirmModal'
 
 export interface AuthorType {
   select: false
-  instagramId: number
+  instagramId: string
   name: string
   collaborationDate: string
   user: boolean
@@ -23,7 +25,7 @@ export interface AuthorType {
 const AuthorPage = () => {
   const [originList, setOriginList] = useState<AuthorType[]>([])
   const [searchedList, setSearchedList] = useState<AuthorType[]>([])
-  const [selectedList, setSelectedList] = useState<TBodyType[]>([])
+  const [selectedList, setSelectedList] = useState<AuthorType[]>([])
   const [startDate, setStartDate] = useState<string>()
   const [endDate, setEndDate] = useState<string>()
   const [text, setText] = useState<string>()
@@ -31,6 +33,8 @@ const AuthorPage = () => {
   const [page, setPage] = useState<number>(1)
   const [totalCount, setTotalCount] = useState<number>(0)
   const [totalPages, setTotalPages] = useState<number>(0)
+  const [isShow, setIsShow] = useState<boolean>(false)
+  const [message, setMessage] = useState<string>('')
   const selectRefs = useRef<any[]>([])
   const navigate = useNavigate()
 
@@ -72,8 +76,8 @@ const AuthorPage = () => {
     { select: false, name: '작가6', authorId: 'author6', isUser: false, date: '2024-01-24' },
   ]
 
-  const selectedItem = (item: TBodyType) => {
-    const index = selectedList.findIndex((select) => select.num === item.num)
+  const selectedItem = (item: AuthorType) => {
+    const index = selectedList.findIndex((select) => select.instagramId === item.instagramId)
 
     if (index === -1) {
       setSelectedList([...selectedList, item])
@@ -153,6 +157,8 @@ const AuthorPage = () => {
   useEffect(() => {
     getAuthorList()
   }, [])
+
+  console.log(originList)
 
   return (
     <Wrapper title="작가관리">
@@ -246,20 +252,40 @@ const AuthorPage = () => {
                   name="선택 삭제"
                   customType={type.empty}
                   addClass="px-3 py-1.5 text-sm"
-                  onClick={() => console.log('선택 삭제 버튼 클릭')}
+                  onClick={() => {
+                    setIsShow(true)
+                    setMessage('선택한 작가를 삭제하시겠어요?')
+                  }}
                 />
-                <Button
+                {/* <Button
                   name="전체 삭제"
                   customType={type.empty}
                   addClass="px-3 py-1.5 text-sm"
                   onClick={() => console.log('전체 삭제 버튼 클릭')}
-                />
+                /> */}
               </div>
             </div>
             <Pagination page={page} totalPages={totalPages} itemsPerPage={10} totalItems={totalCount} />
           </section>
         </div>
       </div>
+      <ModalPortal>
+        {isShow && (
+          <ConfirmModal
+            setState={setIsShow}
+            value={{ yes: '삭제', no: '취소' }}
+            handler={() => {
+              onDeleteAuthor(
+                selectedList.map((item) => {
+                  return item.instagramId
+                }),
+              )
+            }}
+          >
+            <p>{message}</p>
+          </ConfirmModal>
+        )}
+      </ModalPortal>
     </Wrapper>
   )
 }

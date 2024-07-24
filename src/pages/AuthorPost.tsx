@@ -11,6 +11,9 @@ import { customDefaultImg, dateFormat } from '../utils/util'
 import cn from '../lib/tailwindUtil'
 import ImageInput from '../components/@common/row/ImageInput'
 import usePostAuthor from '../hooks/api/author/usePostAuthor'
+import useDuplicateUser from '../hooks/api/user/useDuplicateUser'
+import ModalPortal from '../components/@common/modal/ModalPortal'
+import CompleteModal from '../components/@common/modal/CompleteModal'
 
 export interface AuthorInfoType {
   id: string
@@ -36,6 +39,9 @@ const AuthorPostPage = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [file, setFile] = useState<File | null>(null)
   const [height, setHeight] = useState<number>()
+  const [avaliable, setAvaliable] = useState<boolean>(false)
+  const [confirm, setConfirm] = useState<boolean>(false)
+  const [message, setMessage] = useState<string>('')
   const imageRef = useRef<HTMLInputElement>(null)
   const wrapRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
@@ -45,11 +51,33 @@ const AuthorPostPage = () => {
     onSuccess: (res) => {
       console.log(res)
       console.log('작가 등록 완료')
-      navigate('/author')
+      // navigate('/author')
     },
     onError: (error) => {
       console.log(error)
     },
+  })
+
+  const { refetch: checkDuplicateUser } = useDuplicateUser({
+    name: authorInfo.id,
+    enabled: false,
+    onSuccess: (data) => {
+      console.log(data)
+      setConfirm(true)
+      if (data.response.statue === 200) {
+        setMessage('사용 가능한 SNS 계정입니다.')
+      } else if (data.response.statue === 409) {
+        setMessage('이미 존재하는 SNS 계정입니다.')
+      } else {
+        setMessage('알 수 없는 오류가 발생했습니다.')
+      }
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   })
 
   useEffect(() => {
@@ -94,6 +122,7 @@ const AuthorPostPage = () => {
                 type="date"
                 title="작가 등록일자"
                 value={dateFormat(authorInfo?.collaborationDate)}
+                addClass="bg-gray-50"
               />
             </Row>
             <Row>
@@ -122,7 +151,6 @@ const AuthorPostPage = () => {
                         title: '등록',
                         onClick: () => {
                           console.log('등록 버튼 클릭')
-                          setRegisted(true)
                         },
                       }
                 }
@@ -147,6 +175,7 @@ const AuthorPostPage = () => {
                   title: '중복 확인',
                   onClick: () => {
                     console.log('중복 확인 버튼 클릭')
+                    checkDuplicateUser()
                   },
                 }}
               />
@@ -227,6 +256,13 @@ const AuthorPostPage = () => {
           </div>
         </div>
       </div>
+      <ModalPortal>
+        {confirm && (
+          <CompleteModal setState={setConfirm} value="확인">
+            <p>{message}</p>
+          </CompleteModal>
+        )}
+      </ModalPortal>
     </Wrapper>
   )
 }
